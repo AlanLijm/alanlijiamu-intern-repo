@@ -18,12 +18,19 @@ Get up and move around at regular intervals, check your sitting posture at regul
 
 **1. What equipment changes can you make to improve your workspace setup?**
 I already have an external monitor, but I still need to buy an external keyboard and a laptop stand.
-
+![My desk setup](desk.png)
 **2. What behavioural changes can you implement to improve posture and reduce strain?**
-I would like to take some regular breaks to help relax my muscles and body, and adjust the height of my external monitor.
-
+I would like to take some regular breaks to help relax my muscles and body, and adjust 
+the height of my external monitor. I used Focus Bear's reminder feature, which prompted 
+me to take a 5-minute break every hour from 10 AM to 5 PM. During these breaks, Focus 
+Bear also played some relaxing music to help me unwind before returning to work.
+![My desk setup](take_a_break.png)
 **3. How can you remind yourself to maintain good posture and take breaks throughout the day?**
-I have downloaded Focus Bear and found some useful functions to help me develop a good habit of taking breaks. It can also remind me to adjust my posture.
+I have downloaded Focus Bear and found some useful functions to help me develop a good habit of taking breaks. It can also remind me to adjust my posture. Try using posture and movement reminders for a full workday and note any improvements.
+I tested Focus Bear's reminders for a full workday, from 10 AM to 5 PM. It prompted me 
+to take a 5-minute break every hour, and played relaxing music during each break. 
+Having these regular breaks made me feel more energetic and comfortable throughout the 
+day, compared to sitting at my desk continuously without pausing.
 
 ## Task
 
@@ -39,6 +46,3 @@ I explored the Focus Bear app and set up a reminder to test it for a workday.
 **4. Document at least one workspace change or habit adjustment you made.**
 I adjusted the height of my desk.
 
-## References
-- Laptop Ergonomics: How to Avoid Fatigue and Discomfort — https://ergo-plus.com/laptop-ergonomics-tips/
-- Laptop Ergonomics | Wake Forest University EHS — https://ehs.wfu.edu/ergonomics-sitting-versus-standing/laptop-ergonomics/
