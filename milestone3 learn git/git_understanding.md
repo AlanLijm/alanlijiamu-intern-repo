@@ -33,3 +33,27 @@ A vague commit message
 An overly detailed commit message
 
 A well-structured commit message.
+
+## Commit Message Reflections — Milestone 3.2
+
+### What makes a good commit message?
+A good commit message has a short, clear summary line (ideally under ~50
+characters) using an imperative tone (e.g. "add", "fix", not "added" or
+"fixes"), often prefixed with a type like `feat:`, `fix:`, or `docs:`.
+It focuses on a single logical change, and if needed, a blank line followed
+by a body explaining *why* the change was made — not just repeating *what*
+changed, which is already visible in the diff.
+
+### How does a clear commit message help in team collaboration?
+It lets teammates understand the history of a project without having to
+read every line of code changed. Tools like `git log` and `git blame`
+become genuinely useful for tracing when and why a bug was introduced,
+and reviewers can quickly judge the intent of a change during a PR review
+instead of guessing.
+
+### How can poor commit messages cause issues later?
+Vague messages like "fixed stuff" make it hard to trace when a specific
+bug was introduced or why a change was made, especially months later.
+Overly detailed messages that bundle multiple unrelated changes into one
+commit make it hard to isolate or revert a single change (e.g. with
+`git revert`), and bury the actual purpose of the commit under noise.
