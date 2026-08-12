@@ -29,3 +29,7 @@ requires at least one approval plus passing CI checks, not just a quick glance.
 
 3.2 Writing Meaningful Commit Messages
 A vague commit message
+
+An overly detailed commit message
+
+A well-structured commit message.
