@@ -27,15 +27,20 @@ it or explain their reasoning back. It also showed that merging usually
 requires at least one approval plus passing CI checks, not just a quick glance.
 
 
-3.2 Writing Meaningful Commit Messages
-A vague commit message
 
-An overly detailed commit message
-
-A well-structured commit message.
 
 ## Commit Message Reflections — Milestone 3.2
 
+3.2 Writing Meaningful Commit Messages
+A vague commit message
+An overly detailed commit message
+A well-structured commit message.
+
+| Style | Commit Message | Hash |
+|---|---|---|
+| Vague | `fix stuff` | `637caf4` |
+| Overly detailed | `Updated the README file to include a new section, made some small formatting changes, also fixed a typo I noticed earlier, and added a line about commit practices while I was at it, plus I reorganized the bullet points slightly and changed the heading level from h2 to h3` | `20f8096` |
+| Well-structured | `docs: add commit message practice section to README` | `1ff4bac` |
 ### What makes a good commit message?
 A good commit message has a short, clear summary line (ideally under ~50
 characters) using an imperative tone (e.g. "add", "fix", not "added" or
