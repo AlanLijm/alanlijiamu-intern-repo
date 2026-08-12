@@ -25,3 +25,6 @@ line-level rather than general feedback — reviewers point to exact lines and
 explain the reasoning, and authors either push a follow-up commit addressing
 it or explain their reasoning back. It also showed that merging usually
 requires at least one approval plus passing CI checks, not just a quick glance.
+
+
+3.2 Writing Meaningful Commit Messages
