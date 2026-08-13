@@ -107,3 +107,79 @@ history, that could mean checking dozens or hundreds of commits. Bisect
 cuts that down logarithmically (e.g. ~100 commits takes only ~7 tests
 instead of up to 100), and it removes guesswork by relying on a repeatable
 test rather than reading diffs and guessing what might be the cause.
+
+# Milestone 3.4 — Advanced Git Commands
+
+## 1. `git checkout main -- <file>`
+Modified README.md on branch `advanced-git-practice` (appended "temporary
+bad edit"). Confirmed with `git diff` that the change existed, then ran:
+
+git checkout main -- README.md
+
+`git status` afterward showed "nothing to commit, working tree clean" —
+the file was fully restored to main's version, with no effect on any
+other files in the working directory.
+
+## 2. `git cherry-pick <commit>`
+Created a new commit on `advanced-git-practice`:
+`9f82045 feat: add cherry pick test file`
+
+Switched to `main` and ran:
+
+git cherry-pick 9f82045
+
+Result: a new commit `852f090` was created on `main` with the same
+message and file (`cherry_test.py`), but a different hash — cherry-pick
+copies the change as a brand new commit rather than moving the original.
+
+## 3. `git log`
+
+git log --oneline --graph --all
+
+Showed both branches diverging from a common commit, with the
+cherry-picked commit appearing as two separate nodes (`852f090` on main,
+`9f82045` on advanced-git-practice) — visually confirming cherry-pick
+duplicates rather than merges.
+
+## 4. `git blame README.md`
+
+git blame README.md
+
+Every line was attributed to the same commit (`2ce8dd7c`, Jiamu Li,
+2026-08-12) — showing the file hasn't been permanently modified since
+that commit, and confirming the earlier `checkout` test left no trace.
+
+## Reflections
+
+### What does each command do?
+- `git checkout main -- <file>`: restores a single file to its version
+  on another branch (here, main), without touching any other files or
+  the rest of the working directory.
+- `git cherry-pick <commit>`: applies the changes from one specific
+  commit onto the current branch, creating a new commit with the same
+  changes but a different hash — without merging the whole source branch.
+- `git log`: shows the commit history, with options like `--oneline`
+  for a compact view and `--graph --all` to visualize how branches
+  diverge and merge.
+- `git blame <file>`: shows, line by line, which commit last changed
+  each line and who authored it.
+
+### When would you use it in a real project?
+- `checkout -- <file>` is useful when a specific file gets accidentally
+  broken or you want to discard local edits to just one file, without
+  losing other in-progress work.
+- `cherry-pick` is useful when a bug fix or small feature was committed
+  on a feature branch but is needed immediately on another branch (e.g.
+  a hotfix) without merging unfinished work along with it.
+- `log` is essential for understanding project history, tracing when a
+  feature was added, and reviewing what happened before a release.
+- `blame` is useful for finding out who to ask about a confusing piece
+  of code, or figuring out when and why a specific line was introduced
+  — especially when debugging.
+
+### What surprised you while testing these commands?
+Cherry-pick doesn't move or share the same commit hash across branches
+— it creates an entirely new commit, even though the content and
+message are identical. This makes sense once you think about it (each
+commit's hash depends on its parent), but it wasn't obvious until seeing
+`852f090` and `9f82045` side-by-side in the `--graph` output.
