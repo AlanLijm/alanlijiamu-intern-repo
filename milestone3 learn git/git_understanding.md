@@ -183,3 +183,40 @@ Cherry-pick doesn't move or share the same commit hash across branches
 message are identical. This makes sense once you think about it (each
 commit's hash depends on its parent), but it wasn't obvious until seeing
 `852f090` and `9f82045` side-by-side in the `--graph` output.
+
+
+
+
+---
+
+# Milestone 3.5 — Branching & Team Collaboration
+
+## Evidence
+Created a new branch `branching-practice`, committed a change to
+README.md on it. Switched back to `main` and confirmed the change was
+NOT present — `git log --oneline -1` on main showed the previous commit,
+and README.md did not contain the "Branching Practice" section.
+
+## Reflections
+
+### Why is pushing directly to main problematic?
+`main` is usually treated as the stable, deployable version of the
+project. Pushing directly to it skips code review and any CI checks,
+so untested or broken code can reach everyone immediately — including
+anyone else building on top of main, or a live deployment pulling from
+it. It also leaves no discussion trail explaining why a change was made.
+
+### How do branches help with reviewing code?
+Branches isolate a change from main until it's ready. This means a PR
+can be opened, reviewed, and tested (e.g. via CI) without affecting
+anyone else's work or the stable version of the code. Only after
+approval does the change get merged in, so main always reflects
+reviewed, agreed-upon work.
+
+### What happens if two people edit the same file on different branches?
+Each person's commits stay independent on their own branch and don't
+interfere with each other while they're working. The conflict only
+surfaces when merging: if they changed different parts of the file, git
+can usually merge both automatically; if they changed the same lines,
+git raises a merge conflict that has to be resolved manually by
+choosing (or combining) which version to keep.
