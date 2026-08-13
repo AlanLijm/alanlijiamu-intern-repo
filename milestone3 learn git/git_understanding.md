@@ -220,3 +220,43 @@ surfaces when merging: if they changed different parts of the file, git
 can usually merge both automatically; if they changed the same lines,
 git raises a merge conflict that has to be resolved manually by
 choosing (or combining) which version to keep.
+
+---
+
+# Milestone 3.6 — Staging vs. Committing
+
+## Evidence
+On branch `staging-practice`, modified README.md and walked through the
+full staging lifecycle:
+
+1. `git add README.md` → `git status` showed
+   `Changes to be committed` (staged, not yet committed).
+2. `git restore --staged README.md` → `git status` showed
+   `Changes not staged for commit` (unstaged — the edit itself was
+   still present in the working directory, just removed from the
+   staging area).
+3. `git add README.md` again, then `git commit -m "docs: add staging
+   practice section to README"` → `git status` showed
+   `nothing to commit, working tree clean` (change fully committed).
+
+## Reflections
+
+### What is the difference between staging and committing?
+Staging (`git add`) marks a change as ready to be included in the next
+commit — it moves the change into a temporary "staging area" without
+making it permanent. Committing (`git commit`) takes whatever is in the
+staging area and writes it into the project's permanent history as a
+new snapshot.
+
+### Why does Git separate these two steps?
+It gives control over exactly what goes into each commit. If multiple
+files were changed for different reasons, staging lets you group only
+the related ones together and commit them separately with a meaningful
+message, instead of bundling every change into one commit regardless
+of whether it belongs together.
+
+### When would you want to stage changes without committing?
+When you've made changes across several files but aren't ready to
+commit yet — for example, wanting to review the staged diff first
+(`git diff --staged`) before writing the commit message, or staging
+part of your work while still editing something else that isn't ready.
