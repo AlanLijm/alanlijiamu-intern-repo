@@ -62,3 +62,48 @@ bug was introduced or why a change was made, especially months later.
 Overly detailed messages that bundle multiple unrelated changes into one
 commit make it hard to isolate or revert a single change (e.g. with
 `git revert`), and bury the actual purpose of the commit under noise.
+
+
+# Milestone 3.3 — git bisect Practice
+
+## Bisect Evidence
+Created 5 commits on branch `bisect-practice`, introducing a bug at step 4:
+
+| Commit | Message | Hash | Status |
+|---|---|---|---|
+| 1 | feat: add step 1 | `e569f92` | good |
+| 2 | feat: add step 2 | `e529a78` | good |
+| 3 | feat: add step 3 | `ab7d3af` | good |
+| 4 | feat: add step 4 | `a818088` | **bad — bug introduced** |
+| 5 | feat: add step 5 | `a60e8b7` | bad |
+
+`git bisect` correctly identified the first bad commit:
+
+a818088e908610d218fc0eff367e73bb7b37585e is the first bad commit
+feat: add step 4
+
+This matches the commit where `print('step 4' + 5)` was added, causing a
+`TypeError: can only concatenate str (not "int") to str`.
+
+## Reflections
+
+### What does `git bisect` do?
+It performs a binary search across a range of commits between a known
+"good" state and a known "bad" state, automatically checking out the
+midpoint commit at each step. By marking each tested commit as good or
+bad, it narrows down the exact commit that introduced a bug in O(log n)
+steps instead of checking every commit one by one.
+
+### When would you use it in a real-world debugging situation?
+When a bug is discovered but it's unclear which of many recent commits
+introduced it — for example, a test suite starts failing on CI and no one
+remembers exactly when it broke. Instead of guessing or reading through
+dozens of commits, `git bisect` (optionally combined with `git bisect run`
+and an automated test script) can pinpoint the exact commit quickly.
+
+### How does it compare to manually reviewing commits?
+Manually reviewing commits one by one is a linear search — with a long
+history, that could mean checking dozens or hundreds of commits. Bisect
+cuts that down logarithmically (e.g. ~100 commits takes only ~7 tests
+instead of up to 100), and it removes guesswork by relying on a repeatable
+test rather than reading diffs and guessing what might be the cause.
