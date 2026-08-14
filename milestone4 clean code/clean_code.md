@@ -107,7 +107,7 @@ function calculateOrderTotal(user: User, order: Order): number {
 Applying simplicity, readability, maintainability, consistency, and efficiency turned a nested, duplicated, untyped function into a short, self-documenting one — with the same behavior but far less risk when someone (including future me) needs to change it later.
 
 
-# 3.2 Naming Variables & Functions
+# 4.2 Naming Variables & Functions
  Best Practices Researched
 Be descriptive, not clever: a name should say what a variable holds or what a function does, without needing a comment to explain it (activeUserCount beats cnt).
 Use intention-revealing names: daysSinceLastLogin tells the reader why the value exists, not just its type.
@@ -160,3 +160,122 @@ What makes a good variable or function name? A good name lets a reader understan
 What issues can arise from poorly named variables? Poor names slow down everyone who touches the code later, including the original author. They force readers to trace through logic just to figure out what a value represents, make code review harder (reviewers can't tell if a name matches its use), increase the chance of misuse (passing the wrong value because its purpose wasn't clear), and make bugs easier to introduce during refactors since it's not obvious what depends on what.
 
 How did refactoring improve code readability? After renaming, the function signature alone (calculateDiscountedPrice(originalPrice, discountValue, discountType)) explains what the function does and what each argument means — no need to read the function body or the call site's surrounding context. Replacing the 'p' magic string with a DiscountType union also means the compiler now catches invalid values, turning a naming improvement into a small correctness improvement as well.
+
+# 4.3Writing Small, Focused Functions
+ Best Practices Researched
+Single Responsibility Principle (function-level): a function should do one thing and do it well. If you need "and" to describe what it does (e.g. "validates the order and calculates the total and sends an email"), it should probably be three functions.
+One level of abstraction per function: don't mix high-level orchestration (e.g. "process the order") with low-level details (e.g. manually formatting a date string) in the same function body.
+Small enough to name precisely: if a good, specific name is hard to come by, that's often a sign the function is doing too much.
+Extract, don't just comment: a block of code preceded by a comment like // calculate shipping cost is usually a signal that block should be its own function (calculateShippingCost()) — the comment becomes the function name.
+Prefer pure functions where possible: functions that take inputs and return outputs without touching shared/external state are easier to test and reason about in isolation.
+Limit function length as a smell, not a hard rule: there's no magic line count, but if a function no longer fits on one screen or has more than 2–3 levels of nesting, it's a candidate for splitting.
+Compose small functions instead of duplicating logic: once responsibilities are split out, they can be reused and tested independently.
+ Example: Long, Complex Function
+typescript
+async function handleOrderSubmission(orderData: any): Promise<any> {
+  // validate input
+  if (!orderData.items || orderData.items.length === 0) {
+    throw new Error('Order must have at least one item');
+  }
+  if (!orderData.customerEmail || !orderData.customerEmail.includes('@')) {
+    throw new Error('Invalid customer email');
+  }
+
+  // calculate total
+  let total = 0;
+  for (const item of orderData.items) {
+    total += item.price * item.quantity;
+  }
+  if (orderData.couponCode) {
+    if (orderData.couponCode === 'SAVE10') {
+      total = total * 0.9;
+    } else if (orderData.couponCode === 'SAVE20') {
+      total = total * 0.8;
+    }
+  }
+
+  // save to database
+  const order = { ...orderData, total, createdAt: new Date() };
+  const savedOrder = await db.collection('orders').insertOne(order);
+
+  // send confirmation email
+  const emailBody = `Hi, your order total is $${total.toFixed(2)}. Thank you!`;
+  await emailClient.send({
+    to: orderData.customerEmail,
+    subject: 'Order Confirmation',
+    body: emailBody,
+  });
+
+  return savedOrder;
+}
+Problems
+One function handles four unrelated responsibilities: validation, price calculation, persistence, and notification.
+It mixes abstraction levels — low-level string formatting for the email sits next to a database call and business validation.
+It's hard to test: to test the discount math, you'd also need a working database and email client, since none of it can run in isolation.
+It's hard to reuse: if another part of the app needs "calculate order total with coupon," that logic is trapped inside this function.
+ Refactored: Small, Focused Functions
+typescript
+interface OrderItem {
+  price: number;
+  quantity: number;
+}
+
+interface OrderData {
+  items: OrderItem[];
+  customerEmail: string;
+  couponCode?: string;
+}
+
+const COUPON_DISCOUNTS: Record<string, number> = {
+  SAVE10: 0.1,
+  SAVE20: 0.2,
+};
+
+function validateOrder(orderData: OrderData): void {
+  if (!orderData.items || orderData.items.length === 0) {
+    throw new Error('Order must have at least one item');
+  }
+  if (!orderData.customerEmail || !orderData.customerEmail.includes('@')) {
+    throw new Error('Invalid customer email');
+  }
+}
+
+function calculateOrderTotal(orderData: OrderData): number {
+  const subtotal = orderData.items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+  const discountRate = orderData.couponCode
+    ? COUPON_DISCOUNTS[orderData.couponCode] ?? 0
+    : 0;
+  return subtotal * (1 - discountRate);
+}
+
+async function saveOrder(orderData: OrderData, total: number) {
+  const order = { ...orderData, total, createdAt: new Date() };
+  return db.collection('orders').insertOne(order);
+}
+
+async function sendOrderConfirmationEmail(email: string, total: number) {
+  await emailClient.send({
+    to: email,
+    subject: 'Order Confirmation',
+    body: `Hi, your order total is $${total.toFixed(2)}. Thank you!`,
+  });
+}
+
+async function handleOrderSubmission(orderData: OrderData) {
+  validateOrder(orderData);
+  const total = calculateOrderTotal(orderData);
+  const savedOrder = await saveOrder(orderData, total);
+  await sendOrderConfirmationEmail(orderData.customerEmail, total);
+  return savedOrder;
+}
+
+handleOrderSubmission now reads like a table of contents for the whole process, and each step can be tested, reused, or changed independently.
+
+ Reflections
+
+Why is breaking down functions beneficial? Small, single-purpose functions are easier to test in isolation (e.g. calculateOrderTotal can be unit-tested with plain data, no database or email client needed), easier to reuse elsewhere in the app, and easier to reason about since each one only has one job to hold in your head at a time. They also make code review faster — a reviewer can check "does validateOrder correctly validate?" without also tracing through persistence and email logic.
+
+How did refactoring improve the structure of the code? The top-level handleOrderSubmission function turned into a short, readable sequence of clearly named steps (validate → calculate → save → notify), instead of one long block mixing all four concerns. Each extracted function now operates at a single level of abstraction, so a reader can drill into whichever step they care about instead of parsing the entire flow at once. It also made the coupon logic (calculateOrderTotal) independently reusable and testable, which wasn't possible when it was buried inside the larger function.
