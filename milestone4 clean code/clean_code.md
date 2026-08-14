@@ -105,3 +105,58 @@ function calculateOrderTotal(user: User, order: Order): number {
 
 ##  Summary
 Applying simplicity, readability, maintainability, consistency, and efficiency turned a nested, duplicated, untyped function into a short, self-documenting one — with the same behavior but far less risk when someone (including future me) needs to change it later.
+
+
+# 3.2 Naming Variables & Functions
+ Best Practices Researched
+Be descriptive, not clever: a name should say what a variable holds or what a function does, without needing a comment to explain it (activeUserCount beats cnt).
+Use intention-revealing names: daysSinceLastLogin tells the reader why the value exists, not just its type.
+Avoid abbreviations and single letters outside of tiny, obvious scopes (e.g. i in a short loop is fine; usr, msg, tmp for anything long-lived is not).
+Functions should read like verbs, variables like nouns: calculateTotalPrice() vs totalPrice. A function name should describe the action/result it performs.
+Boolean names should read as yes/no questions: isActive, hasPermission, canRetry — not flag or status.
+Avoid misleading names: a name shouldn't imply a type, unit, or behavior it doesn't have (e.g. don't call something userList if it's actually a Map).
+Consistent vocabulary: pick one word per concept across the codebase (don't mix fetch, get, and retrieve for the same kind of operation) — this ties back to the Consistency principle from 4.1.
+Length should match scope: short names are fine for variables used within a few lines (e.g. loop counters); names visible across a wider scope (class fields, exported functions) should be more descriptive since readers have less surrounding context.
+ Example: Unclear Names
+typescript
+function calc(a: number, b: number, t: string): number {
+  let x;
+  if (t === 'p') {
+    x = a * (b / 100);
+  } else {
+    x = a - b;
+  }
+  return x;
+}
+
+const y = calc(200, 15, 'p');
+Problems
+calc, a, b, t, x, y give no indication of what's being calculated, what the inputs mean, or what 'p' represents.
+The caller (calc(200, 15, 'p')) is unreadable without opening the function — you can't tell if 200 is a price, a quantity, or something else.
+The 'p' string is a magic value with no defined meaning (a stringly-typed flag instead of a real type).
+ Refactored: Clear Names
+typescript
+type DiscountType = 'percentage' | 'flat';
+
+function calculateDiscountedPrice(
+  originalPrice: number,
+  discountValue: number,
+  discountType: DiscountType,
+): number {
+  if (discountType === 'percentage') {
+    return originalPrice * (discountValue / 100);
+  }
+  return originalPrice - discountValue;
+}
+
+const discountedPrice = calculateDiscountedPrice(200, 15, 'percentage');
+
+Now the function name states exactly what it computes, each parameter name states what it represents, and discountType is a real union type instead of an unexplained string.
+
+ Reflections
+
+What makes a good variable or function name? A good name lets a reader understand what the code does without reading its implementation. It's specific enough to distinguish it from similar things in the codebase, matches the vocabulary used elsewhere in the project, and (for functions) reads like a description of the action being performed.
+
+What issues can arise from poorly named variables? Poor names slow down everyone who touches the code later, including the original author. They force readers to trace through logic just to figure out what a value represents, make code review harder (reviewers can't tell if a name matches its use), increase the chance of misuse (passing the wrong value because its purpose wasn't clear), and make bugs easier to introduce during refactors since it's not obvious what depends on what.
+
+How did refactoring improve code readability? After renaming, the function signature alone (calculateDiscountedPrice(originalPrice, discountValue, discountType)) explains what the function does and what each argument means — no need to read the function body or the call site's surrounding context. Replacing the 'p' magic string with a DiscountType union also means the compiler now catches invalid values, turning a naming improvement into a small correctness improvement as well.
