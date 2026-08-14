@@ -366,3 +366,70 @@ The validation rule now exists in exactly one place (validateEmail / validateAge
 What were the issues with duplicated code? The duplicated validation logic meant the same business rule was defined three times instead of once. This made the code harder to maintain (any rule change required editing every copy), increased the risk of the copies silently drifting apart (e.g. one call site getting updated while another is forgotten), and made the codebase larger and noisier than necessary for no real benefit.
 
 How did refactoring improve maintainability? After extracting validateEmail and validateAge into shared functions, there's now a single source of truth for each rule. A future change — such as tightening the email format check — only needs to happen in one place and automatically applies everywhere it's used. It also makes the intent clearer: validateUser reads as "run the standard user validation," rather than requiring the reader to compare three near-identical blocks to confirm they actually do the same thing.
+
+# 4.5 Commenting & Documentation
+ Best Practices Researched
+Comments explain why, not what: the code itself should say what it does (via good naming and structure); comments are for context the code can't express — intent, trade-offs, business reasons, or warnings about non-obvious behavior.
+A needed comment is sometimes a refactoring signal: if a block of code needs a comment like // check if user can checkout, that's often a sign the block should become a function named canUserCheckout() instead — the name replaces the comment.
+Avoid redundant comments: comments that just restate the code (// increment i by 1 above i++) add noise without adding information, and they rot — they don't get updated when the code changes, so they become actively misleading.
+Document public APIs, not every line: exported functions, classes, and modules that other developers will call without reading their internals benefit from doc comments (e.g. JSDoc/TSDoc) describing parameters, return values, and edge cases. Private, obvious internal code usually doesn't need it.
+Warn about non-obvious behavior: comments are valuable for flagging things a reader wouldn't expect — a workaround for a library bug, a deliberately unusual algorithm choice, a // TODO for known technical debt, or a note about a side effect.
+Keep comments close to and consistent with the code: a comment far from the code it describes, or one that contradicts the code, is worse than no comment — readers tend to trust comments over code and get misled.
+README / module-level docs matter for onboarding: while inline comments explain local details, higher-level documentation (README, architecture notes) is what lets a new developer understand a module's purpose before diving into individual functions.
+
+Example: Poor Commenting
+typescript
+// function to process data
+function proc(arr: number[]): number {
+  let t = 0; // total
+  for (let i = 0; i < arr.length; i++) {
+    // add to total
+    t += arr[i];
+  }
+  // return the total
+  return t;
+}
+
+// this is a discount, dont change unless told to
+// old logic from before, might be wrong
+function getDisc(p: number): number {
+  return p * 0.85; // 15% off
+}
+
+Problems
+The comments on proc just restate the code line by line (// add to total above t += arr[i]) — they add no information a reader couldn't already see, and they'd need to be manually kept in sync with any future change.
+The comment on proc (// function to process data) is vague and doesn't say what processing happens — a reader still has to read the implementation to learn it just sums an array.
+getDisc's comments hint at important context ("might be wrong", "don't change unless told to") but don't explain why — who told them, what the correct rate should be, or what would break if changed. This is a warning sign without enough information to act on it.
+The 15% comment restates the literal 0.85 instead of explaining why the discount is 15% (e.g. is it a seasonal promotion? a loyalty tier?).
+ Rewritten: Clear Naming + Purposeful Comments
+typescript
+/**
+ * Sums all values in the given array.
+ */
+function sumValues(values: number[]): number {
+  return values.reduce((total, value) => total + value, 0);
+}
+
+/**
+ * Applies the standard loyalty-tier discount (15%).
+ *
+ * NOTE: This rate is set by the Marketing team's Q3 promotion
+ * (see ticket MKT-482) and is intentionally hardcoded until the
+ * promotions service (planned for Q4) replaces it.
+ */
+function applyLoyaltyDiscount(price: number): number {
+  const LOYALTY_DISCOUNT_RATE = 0.15;
+  return price * (1 - LOYALTY_DISCOUNT_RATE);
+}
+Why this is better
+sumValues and applyLoyaltyDiscount are self-explanatory from their names alone — the line-by-line "what" comments are no longer needed because the code (plus a short doc comment) already says what happens.
+The doc comment on sumValues documents its public contract in one line, useful to anyone calling it without reading the body.
+The comment on applyLoyaltyDiscount now explains why the rate is 15% and why it's hardcoded (ties to a real ticket and a planned follow-up), instead of a vague "don't touch this" warning with no context.
+LOYALTY_DISCOUNT_RATE as a named constant removes the need for a comment translating 0.85 into "15% off."
+ Reflections
+
+When should you add comments? 
+Add a comment when the code cannot fully express something a reader needs to know: the why behind a decision (e.g. a business rule, a ticket reference, a deliberate trade-off), a warning about non-obvious or surprising behavior (a workaround for a library bug, a TODO for known debt), or a doc comment on a public API describing its contract for callers who won't read its internals. In short — comment when you're conveying context, not restating logic.
+
+When should you avoid comments and instead improve the code? 
+Avoid a comment whenever it exists only to explain what the code does — that's a sign the code itself should be clearer, usually through better naming or extracting a well-named function (e.g. // check if user can checkout becomes canUserCheckout()). Comments should also be avoided as a substitute for fixing confusing code: a comment that says "this is weird, don't touch it" without real context is a maintenance hazard, not documentation — the underlying code (or at least the reasoning) should be clarified instead.
