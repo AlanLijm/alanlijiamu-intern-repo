@@ -161,7 +161,7 @@ What issues can arise from poorly named variables? Poor names slow down everyone
 
 How did refactoring improve code readability? After renaming, the function signature alone (calculateDiscountedPrice(originalPrice, discountValue, discountType)) explains what the function does and what each argument means — no need to read the function body or the call site's surrounding context. Replacing the 'p' magic string with a DiscountType union also means the compiler now catches invalid values, turning a naming improvement into a small correctness improvement as well.
 
-# 4.3Writing Small, Focused Functions
+# 4.3 Writing Small, Focused Functions
  Best Practices Researched
 Single Responsibility Principle (function-level): a function should do one thing and do it well. If you need "and" to describe what it does (e.g. "validates the order and calculates the total and sends an email"), it should probably be three functions.
 One level of abstraction per function: don't mix high-level orchestration (e.g. "process the order") with low-level details (e.g. manually formatting a date string) in the same function body.
@@ -279,3 +279,90 @@ handleOrderSubmission now reads like a table of contents for the whole process, 
 Why is breaking down functions beneficial? Small, single-purpose functions are easier to test in isolation (e.g. calculateOrderTotal can be unit-tested with plain data, no database or email client needed), easier to reuse elsewhere in the app, and easier to reason about since each one only has one job to hold in your head at a time. They also make code review faster — a reviewer can check "does validateOrder correctly validate?" without also tracing through persistence and email logic.
 
 How did refactoring improve the structure of the code? The top-level handleOrderSubmission function turned into a short, readable sequence of clearly named steps (validate → calculate → save → notify), instead of one long block mixing all four concerns. Each extracted function now operates at a single level of abstraction, so a reader can drill into whichever step they care about instead of parsing the entire flow at once. It also made the coupon logic (calculateOrderTotal) independently reusable and testable, which wasn't possible when it was buried inside the larger function.
+
+# 4.4 Avoiding Code Duplication (DRY)
+ Research: The DRY Principle
+
+"Don't Repeat Yourself" means every piece of knowledge or logic should have a single, unambiguous representation in the codebase. Duplication isn't just about identical lines of code — it's about the same decision or rule being expressed in more than one place. Key points from research:
+
+Duplication multiplies maintenance cost: if a business rule (e.g. a discount calculation or a validation rule) is copy-pasted in three places, fixing a bug means finding and updating all three — and it's easy to miss one, leaving inconsistent behavior.
+Duplication isn't always literal copy-paste: two functions that look different but encode the same rule (e.g. two separate age-eligibility checks with slightly different syntax) are still a DRY violation.
+The fix is usually extraction, not just deletion: pull the shared logic into a single function, class, constant, or shared module, and have all call sites use it.
+DRY has a limit: forcing two pieces of code together just because they currently look similar — when they represent unrelated rules that happen to coincide — can create a false, brittle abstraction. DRY applies to genuinely shared knowledge, not superficially similar code.
+
+ Example: Duplicated Code
+typescript
+function validateNewUser(user: { email: string; age: number }) {
+  if (!user.email || !user.email.includes('@')) {
+    throw new Error('Invalid email address');
+  }
+  if (user.age < 0 || user.age > 120) {
+    throw new Error('Invalid age');
+  }
+}
+
+function validateUserUpdate(user: { email: string; age: number }) {
+  if (!user.email || !user.email.includes('@')) {
+    throw new Error('Invalid email address');
+  }
+  if (user.age < 0 || user.age > 120) {
+    throw new Error('Invalid age');
+  }
+}
+
+function validateGuestCheckoutUser(user: { email: string; age: number }) {
+  if (!user.email || !user.email.includes('@')) {
+    throw new Error('Invalid email address');
+  }
+  if (user.age < 0 || user.age > 120) {
+    throw new Error('Invalid age');
+  }
+}
+Problems
+The exact same email and age validation rules are copy-pasted across three functions.
+If the email validation rule needs to change (e.g. switch to a proper regex or a library), it has to be updated in three separate places — and a future change is likely to only touch one or two of them by mistake, creating inconsistent validation behavior across the app.
+More duplicate call sites will likely be added over time (e.g. validateAdminUser), compounding the problem.
+ Refactored: Shared Validation Logic
+typescript
+interface ValidatableUser {
+  email: string;
+  age: number;
+}
+
+function validateEmail(email: string): void {
+  if (!email || !email.includes('@')) {
+    throw new Error('Invalid email address');
+  }
+}
+
+function validateAge(age: number): void {
+  if (age < 0 || age > 120) {
+    throw new Error('Invalid age');
+  }
+}
+
+function validateUser(user: ValidatableUser): void {
+  validateEmail(user.email);
+  validateAge(user.age);
+}
+
+// All three call sites now share one implementation:
+function validateNewUser(user: ValidatableUser) {
+  validateUser(user);
+}
+
+function validateUserUpdate(user: ValidatableUser) {
+  validateUser(user);
+}
+
+function validateGuestCheckoutUser(user: ValidatableUser) {
+  validateUser(user);
+}
+
+The validation rule now exists in exactly one place (validateEmail / validateAge), and every caller reuses it instead of re-implementing it.
+
+ Reflections
+
+What were the issues with duplicated code? The duplicated validation logic meant the same business rule was defined three times instead of once. This made the code harder to maintain (any rule change required editing every copy), increased the risk of the copies silently drifting apart (e.g. one call site getting updated while another is forgotten), and made the codebase larger and noisier than necessary for no real benefit.
+
+How did refactoring improve maintainability? After extracting validateEmail and validateAge into shared functions, there's now a single source of truth for each rule. A future change — such as tightening the email format check — only needs to happen in one place and automatically applies everywhere it's used. It also makes the intent clearer: validateUser reads as "run the standard user validation," rather than requiring the reader to compare three near-identical blocks to confirm they actually do the same thing.
