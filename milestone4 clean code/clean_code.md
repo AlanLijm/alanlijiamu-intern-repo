@@ -532,7 +532,7 @@ What was the issue with the original code? The original functions assumed their 
 
 How does handling errors improve reliability? Explicit error handling means failures are anticipated and given a clear, typed identity instead of being an accident that happens to surface as a crash. This makes the system more predictable: callers can catch specific error types and decide how to respond (retry, show a message, log and alert), invalid data is rejected at the boundary before it can corrupt further logic, and when something does fail, the error message actually explains what happened and where — which makes debugging and recovery far faster than tracing back from a generic, unhandled exception.
 
-# 4.7 # Refactoring Code for Simplicity
+# 4.7 Refactoring Code for Simplicity
 
 ## 📖 Research: Common Refactoring Techniques
 
@@ -632,7 +632,7 @@ The original code was complex mainly because of over-engineering: it used a full
 **How did refactoring improve it?**
 Replacing the Strategy/Factory pattern with a plain lookup object reduced five pieces of code (interface + 2 strategy classes + factory + function) down to one small map and one function, without losing any functionality — adding a new shipping mode is now trivial. Using a guard clause instead of nested conditionals made the "invalid weight" rule readable in a single line, and naming the rate constants removed the need to guess what `2` and `5` meant. The simplified version keeps exactly the same behavior as the original but requires far less effort to read, verify, or extend — matching the principle that structure should fit the actual complexity of the problem, not a hypothetical future one.
 
-# 4.8 # Identifying & Fixing Code Smells
+# 4.8 Identifying & Fixing Code Smells
 
 ## 📖 Research: Common Code Smells and Their Impact
 A "code smell" isn't a bug — the code still works — but it's a surface-level signal that the underlying design has a problem that will likely cause pain later: harder debugging, higher risk when changing code, and slower onboarding for new developers. Smells matter because they compound: a codebase with many small smells becomes disproportionately harder to work in than the sum of its individual issues, since problems interact (e.g. duplicated code inside a long function inside a god object). Below are the seven smells covered here, with a "before" example, a fix, and why the fix helps.
