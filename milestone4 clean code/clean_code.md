@@ -283,3 +283,152 @@ Writing these tests confirmed that `getShippingCost` is a small, pure function �
 
 **What issues did you find while testing?**
 Writing the zero-weight case (`getShippingCost(0, 'standard')`) exposed a subtle edge case worth double-checking: the guard clause only checks `weight == null || weight < 0`, so `0` correctly falls through to the calculation and returns `0 * 2 = 0` — the right answer, but for a different reason than the null/negative guard. It's easy to assume "0 is falsy so it's caught by the guard," which isn't actually true here, and a less careful implementation could have accidentally rejected valid zero-weight orders (e.g. a free digital add-on) if the guard clause had used `!weight` instead of the explicit `== null` check. Writing an explicit test for this case makes that behavior intentional and protected against future regressions, rather than accidentally correct.
+
+
+# 4.10 Code Formatting & Style Guides
+
+## 📖 Research: Why Consistent Code Style Matters
+- **Removes bikeshedding**: without an enforced style, developers spend time debating tabs vs spaces, quote style, or where to put a brace — decisions with no real impact on correctness. A style guide + automated enforcement settles these once, for the whole team.
+- **Makes diffs meaningful**: when formatting is inconsistent, a small logic change can produce a noisy diff full of unrelated whitespace/quote changes, making code review harder and hiding the actual change. Consistent formatting keeps diffs focused on real changes.
+- **Lowers the cost of reading unfamiliar code**: everyone benefits when every file "looks the same" — a reader doesn't need to adjust to each author's personal style when moving between files.
+- **Catches real bugs, not just style**: linters (like ESLint) don't just format — rules like `no-unused-vars` and `eqeqeq` catch actual mistakes (dead code, loose-equality bugs) before they cause problems.
+- **Automation removes human error and friction**: manually enforcing style during code review is slow and inconsistent between reviewers. A formatter (Prettier) and linter (ESLint) run automatically, catching issues before a human reviewer even looks at the code.
+
+## 📚 Airbnb JavaScript Style Guide — Key Points Reviewed
+The [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) is one of the most widely adopted style guides in the JS/TS ecosystem. Notable conventions relevant to this project:
+- Prefer `const` over `let`, and never use `var` — avoids accidental reassignment and scoping bugs.
+- Always use `===`/`!==` instead of `==`/`!=` to avoid type-coercion bugs (with `== null` commonly allowed as an intentional shorthand for "null or undefined").
+- Use template literals (`` `Hello ${name}` ``) instead of string concatenation.
+- Always use braces for multi-line blocks, with consistent brace placement.
+- No unused variables — an unused import or variable is treated as an error, not a warning.
+
+These conventions connect back to earlier milestones — e.g. `===`/`== null` ties to 4.6's point about handling edge cases explicitly, and "no unused variables" is the same dead-code smell from 4.8.
+
+## 🛠 Installing & Configuring ESLint + Prettier
+
+The onboarding repo (`onboarding-backend-nest-js`) turned out to be a milestone-based practice repo rather than a running NestJS service — it has no `src` folder, `tsconfig.json`, or Nest CLI scaffolding. Setup was done from scratch, and the process surfaced several real compatibility issues along the way (documented below rather than glossed over, since working through them was itself part of the exercise).
+
+**Install dependencies:**
+```powershell
+npm install --save-dev eslint prettier eslint-config-prettier eslint-plugin-prettier @typescript-eslint/parser @typescript-eslint/eslint-plugin
+npm install --save-dev @eslint/js@8.57.1 globals
+```
+(`eslint-config-airbnb-base` and `eslint-plugin-import` were installed initially to follow the Airbnb guide directly, but were dropped — Airbnb's config doesn't yet support ESLint's flat config format, so `@typescript-eslint/recommended` was used instead as a widely-adopted equivalent, applying the same Airbnb conventions reviewed above as manual rules.)
+
+**`eslint.config.mjs`** (flat config — required because this project uses ESLint 8.57.1, where flat config exists but isn't the default the way it is in ESLint 9+):
+```javascript
+import js from '@eslint/js';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import prettierPlugin from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier';
+import globals from 'globals';
+
+export default [
+  js.configs.recommended,
+  {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: 'module',
+      },
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tseslint,
+      prettier: prettierPlugin,
+    },
+    rules: {
+      ...tseslint.configs.recommended.rules,
+      'prettier/prettier': 'error',
+      '@typescript-eslint/no-unused-vars': 'error',
+      eqeqeq: ['error', 'always', { null: 'ignore' }],
+    },
+  },
+  prettierConfig, // must be last: turns off ESLint style rules that conflict with Prettier
+];
+```
+
+**`.prettierrc`:**
+```json
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "printWidth": 100,
+  "tabWidth": 2,
+  "semi": true
+}
+```
+
+**Running lint** (ESLint 8.57.1 needs an explicit environment variable to use flat config):
+```powershell
+$env:ESLINT_USE_FLAT_CONFIG="true"; npx eslint "milestone4 clean code/lint-demo.ts"
+$env:ESLINT_USE_FLAT_CONFIG="true"; npx eslint "milestone4 clean code/lint-demo.ts" --fix
+```
+
+## 🧩 What Actually Happened: Before → After
+
+**Before (`lint-demo.ts`):**
+```typescript
+var userName = "Alan"
+let unusedVar = 5
+
+function calculateTax(price) {
+  return price * 0.0825
+}
+
+function greet(name) {
+  if (name == null) {
+    return 'Hello, stranger'
+  }
+  else {
+    return "Hello, " + name
+  }
+}
+```
+
+**First lint run — 18 problems:**
+- 14 Prettier formatting errors — mostly stray `␍` characters (Windows CRLF line endings not matching the project's expected line endings), plus missing semicolons and inconsistent quote style.
+- 4 real `@typescript-eslint/no-unused-vars` errors — `userName`, `unusedVar`, `calculateTax`, and `greet` were all declared but never used anywhere.
+
+**After `eslint --fix`:** all 14 formatting issues were resolved automatically. The 4 unused-variable errors were correctly left untouched — ESLint won't guess whether an unused declaration should be deleted or actually used, so that's a decision for a human.
+
+**After (manually resolved, then re-formatted):**
+```typescript
+const userName = 'Alan';
+
+function calculateTax(price: number): number {
+  return price * 0.0825;
+}
+
+function greet(name: string | null): string {
+  if (name == null) {
+    return 'Hello, stranger';
+  } else {
+    return `Hello, ${name}`;
+  }
+}
+
+console.log(userName, calculateTax(100), greet(userName));
+```
+Final lint run: **0 problems.**
+
+## 💭 Reflections
+
+**Why is code formatting important?**
+Consistent formatting keeps code review and diffs focused on real logic changes instead of whitespace or quote-style noise. It also removes decisions individual developers would otherwise make inconsistently (tabs vs spaces, quote style) — the tool decides once, for everyone, instead of relying on each contributor remembering the convention.
+
+**What issues did the linter detect?**
+The first run found 18 problems: 14 were Prettier formatting issues (mostly CRLF line-ending mismatches from Windows, plus missing semicolons and quote style), and 4 were genuine `no-unused-vars` errors for declarations that were never called anywhere in the file. `eslint --fix` cleared all 14 formatting issues automatically but correctly left the 4 unused-variable errors for manual review, since only a human can decide whether an unused declaration is dead code to delete or something that should actually be used.
+
+Fixing those 4 manually also caught a real bug in the process: I first wrote `return 'Hello, ${name}';` with single quotes instead of backticks, so the `${name}` interpolation wouldn't actually have worked at runtime — it would have printed the literal text `${name}` rather than the value of `name`. ESLint/Prettier didn't flag this, since it's syntactically valid, just not what was intended — a useful reminder that linting complements testing (4.9) rather than replacing it; some mistakes only a test (or careful reading) will catch.
+
+Setting this up on Windows with this project's ESLint version also surfaced two environment-specific issues: ESLint 8.57.1 doesn't default to flat config, so every run needed `ESLINT_USE_FLAT_CONFIG=true` set first; and flat config doesn't automatically know about Node/Jest globals (like `console`) the way the older `.eslintrc.js`'s `env: { node: true }` option did, which needed the `globals` package and an explicit `languageOptions.globals` entry.
+
+**Did formatting the code make it easier to read?**
+Yes — the file went from mixed line endings, inconsistent quotes, and unused, dead-looking declarations to a short, consistently formatted file where every value is actually used and its purpose is clear. The process also caught a genuine logic bug (the wrong quote type breaking string interpolation) that would likely have been missed on a casual read, reinforcing that the setup effort for linting/formatting pays off even on a small file.
