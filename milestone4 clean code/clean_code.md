@@ -208,8 +208,6 @@ The original code was complex mainly because of over-engineering: it used a full
 Replacing the Strategy/Factory pattern with a plain lookup object reduced five pieces of code (interface + 2 strategy classes + factory + function) down to one small map and one function, without losing any functionality — adding a new shipping mode is now trivial. Using a guard clause instead of nested conditionals made the "invalid weight" rule readable in a single line, and naming the rate constants removed the need to guess what `2` and `5` meant. The simplified version keeps exactly the same behavior as the original but requires far less effort to read, verify, or extend — matching the principle that structure should fit the actual complexity of the problem, not a hypothetical future one.
 
 
-
-
 # 4.9 Writing Unit Tests for Clean Code
 
 ## 📖 Research: Why Unit Testing Matters
