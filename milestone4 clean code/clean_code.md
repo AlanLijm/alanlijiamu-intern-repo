@@ -436,7 +436,7 @@ Avoid a comment whenever it exists only to explain what the code does — that's
 
 # 4.6 Handling Errors & Edge Cases
 
-## 📖 Research: Strategies for Handling Errors and Edge Cases
+Research: Strategies for Handling Errors and Edge Cases
 
 - **Guard clauses**: check for invalid conditions first and return/throw immediately, instead of nesting the "happy path" inside a big `if (valid) { ... }` block. This flattens the function and makes the valid conditions for proceeding explicit at the top, rather than buried in an `else`.
 - **Fail fast**: validate inputs as early as possible and reject bad data at the boundary, rather than letting invalid values silently flow deeper into the system where the eventual failure is harder to trace back to its cause.
@@ -471,14 +471,14 @@ async function processRefund(orders, orderId) {
 }
 ```
 
-### Problems
+Problems
 - `getDiscountedPrice` doesn't validate its inputs: a negative `price`, a `discountPercent` over 100, or non-numeric input (e.g. `undefined`) all silently produce a nonsensical result (like a negative price) instead of failing clearly.
 - `findUserOrder` returns `undefined` when no match is found, with no signal to the caller that this is a real possibility they need to handle.
 - `processRefund` doesn't check whether `order` exists before using it — if the order isn't found, `order.total` throws an unhandled `TypeError: Cannot read properties of undefined`, which gives no useful information about *why* the refund failed.
 - There's no distinction between "order not found" (an expected, recoverable case) and a genuine unexpected crash — both currently look like an unhandled exception with a confusing stack trace.
 - If `paymentGateway.refund` fails (e.g. network error), there's no try/catch, so the caller of `processRefund` gets an unhandled rejection with no context about which step failed.
 
-## ✨ Refactored: Guard Clauses + Explicit Error Handling
+Refactored: Guard Clauses + Explicit Error Handling
 
 ```typescript
 class InvalidInputError extends Error {}
@@ -527,14 +527,14 @@ async function processRefund(orders: Order[], orderId: string): Promise<number> 
 }
 ```
 
-### Why this is better
+Why this is better
 - **Guard clauses** at the top of `getDiscountedPrice` and `processRefund` reject invalid input immediately, so the rest of each function can assume it's working with valid data — no defensive checks scattered later in the logic.
 - **`findUserOrder` returns `Order | null` instead of implicitly `undefined`**, and its return type makes the "not found" case visible in the type system, so callers can't forget to handle it without a type error.
 - **Specific error types** (`InvalidInputError`, `OrderNotFoundError`, `RefundFailedError`) let calling code (e.g. an API layer) catch each case and respond appropriately — for example, mapping `OrderNotFoundError` to a 404 and `InvalidInputError` to a 400 — instead of treating every failure identically.
 - **The payment gateway call is wrapped in a try/catch** that re-throws with context (which order failed and why), instead of letting a raw, unexplained rejection propagate up.
 - **Edge cases are handled explicitly**: missing `orderId`, an order that doesn't exist, and a downstream payment failure are each a distinct, named path instead of one generic crash.
 
-## 💭 Reflections
+Reflections
 
 **What was the issue with the original code?**
 The original functions assumed their inputs would always be valid and that every operation would succeed, so there was no code path for the cases where that assumption breaks — an order not being found, a bad discount value, or a failed refund call. This meant failures showed up as raw, unhandled exceptions (like a `TypeError` on `order.total`) rather than clear, meaningful errors, making it hard to tell *why* something failed or to distinguish an expected case (order not found) from a genuine bug.
