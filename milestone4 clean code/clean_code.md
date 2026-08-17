@@ -105,3 +105,104 @@ The original functions assumed their inputs would always be valid and that every
 
 **How does handling errors improve reliability?**
 Explicit error handling means failures are anticipated and given a clear, typed identity instead of being an accident that happens to surface as a crash. This makes the system more predictable: callers can catch specific error types and decide how to respond (retry, show a message, log and alert), invalid data is rejected at the boundary before it can corrupt further logic, and when something does fail, the error message actually explains what happened and where — which makes debugging and recovery far faster than tracing back from a generic, unhandled exception.
+
+
+# 4.7 Refactoring Code for Simplicity
+
+## 📖 Research: Common Refactoring Techniques
+
+- **Extract Function**: pull a chunk of logic out into its own well-named function, reducing the size and cognitive load of the original function (used throughout 4.3 and 4.4).
+- **Replace Conditional with Polymorphism / Lookup Table**: instead of a long `if/else` or `switch` branching on a type, use a map/object keyed by that type, or (in OOP) let each type provide its own implementation. Removes repeated branching logic.
+- **Decompose Conditional**: extract complex boolean expressions into a well-named function or variable (`if (isEligibleForDiscount(user, order))` instead of a long inline condition), so the *meaning* of the condition is visible instead of its raw logic.
+- **Replace Magic Number/Value with Named Constant**: give unexplained literals a name that documents their purpose.
+- **Remove Dead Code and Unnecessary Flags**: delete unused branches, commented-out old code, and boolean "mode" flags that just toggle between two near-duplicate code paths — these add complexity without current value.
+- **Simplify Nested Conditionals with Guard Clauses**: as covered in 4.6, returning early on invalid/edge cases removes a layer of nesting for the main logic.
+- **Avoid Over-Engineering (YAGNI – "You Aren't Gonna Need It")**: remove abstraction layers, configuration options, or generic frameworks built for hypothetical future needs that aren't actually required yet. Overly generic code is often *more* complex than a direct solution to the actual problem.
+- **Inline unnecessary indirection**: if a function, variable, or class only wraps another one without adding meaning, removing the wrapper can simplify the code rather than complicate it — simplicity isn't just about splitting things up, it's about matching structure to actual need.
+
+## 🧩 Example: Overly Complicated Code
+
+```typescript
+class ShippingCalculatorStrategyFactory {
+  static getStrategy(mode: string) {
+    if (mode === 'standard') {
+      return new StandardShippingStrategy();
+    } else if (mode === 'express') {
+      return new ExpressShippingStrategy();
+    }
+    return new StandardShippingStrategy();
+  }
+}
+
+interface ShippingStrategy {
+  calculate(weight: number): number;
+}
+
+class StandardShippingStrategy implements ShippingStrategy {
+  calculate(weight: number): number {
+    return weight * 2;
+  }
+}
+
+class ExpressShippingStrategy implements ShippingStrategy {
+  calculate(weight: number): number {
+    return weight * 5;
+  }
+}
+
+function getShippingCost(weight: number, mode: string): number {
+  const factory = new ShippingCalculatorStrategyFactory();
+  const strategy = ShippingCalculatorStrategyFactory.getStrategy(mode);
+  let cost;
+  if (weight !== null && weight !== undefined) {
+    if (weight >= 0) {
+      cost = strategy.calculate(weight);
+    } else {
+      cost = 0;
+    }
+  } else {
+    cost = 0;
+  }
+  return cost;
+}
+```
+
+### Problems
+- A full **Strategy + Factory pattern** (two classes, an interface, and a factory) is used for what is really just two flat rate multipliers (`2` and `5`) — this is over-engineering for a problem that doesn't need runtime-swappable, extensible strategy objects.
+- The unused `factory` variable in `getShippingCost` is dead code left over from a partial refactor.
+- The weight validation is written as **deeply nested conditionals** (`if weight is not null/undefined { if weight >= 0 { ... } else { ... } } else { ... }`) instead of simple guard clauses, making a simple rule ("invalid or negative weight costs 0") harder to see at a glance.
+- The multipliers `2` and `5` are unexplained magic numbers.
+- The extra layers (interface, two classes, factory) mean a reader has to jump across four separate places just to learn that express shipping costs 5x the weight.
+
+## ✨ Refactored: Simpler, Equivalent Code
+
+```typescript
+const SHIPPING_RATE_PER_KG: Record<string, number> = {
+  standard: 2,
+  express: 5,
+};
+
+function getShippingCost(weight: number, mode: string): number {
+  if (weight == null || weight < 0) {
+    return 0;
+  }
+
+  const ratePerKg = SHIPPING_RATE_PER_KG[mode] ?? SHIPPING_RATE_PER_KG.standard;
+  return weight * ratePerKg;
+}
+```
+
+### Why this is better
+- The **Strategy/Factory classes are replaced with a lookup table** (`SHIPPING_RATE_PER_KG`), since the "strategies" were really just two constant rates — no polymorphism or extensibility was actually needed. Adding a new shipping mode is now a one-line addition to the map instead of a new class plus a factory branch.
+- **Guard clause** (`if (weight == null || weight < 0) return 0;`) replaces the nested if/else, making the invalid-input rule immediately visible at the top of the function.
+- **Named constant map** replaces the magic numbers `2` and `5`, and documents both the rate and which mode it belongs to in one place.
+- The **dead `factory` variable is removed**.
+- The whole implementation is now readable in one function instead of requiring a reader to trace through five separate declarations.
+
+## 💭 Reflections
+
+**What made the original code complex?**
+The original code was complex mainly because of over-engineering: it used a full Strategy + Factory design pattern to represent what was actually just two constant multipliers, adding four extra pieces of structure (an interface and three classes) for a problem that didn't need runtime extensibility. On top of that, the weight validation used unnecessarily nested conditionals for a simple rule, there was leftover dead code (the unused `factory` variable), and the shipping rates were unexplained magic numbers — none of which added any real value, but all of which added places a reader had to check to understand one simple calculation.
+
+**How did refactoring improve it?**
+Replacing the Strategy/Factory pattern with a plain lookup object reduced five pieces of code (interface + 2 strategy classes + factory + function) down to one small map and one function, without losing any functionality — adding a new shipping mode is now trivial. Using a guard clause instead of nested conditionals made the "invalid weight" rule readable in a single line, and naming the rate constants removed the need to guess what `2` and `5` meant. The simplified version keeps exactly the same behavior as the original but requires far less effort to read, verify, or extend — matching the principle that structure should fit the actual complexity of the problem, not a hypothetical future one.
