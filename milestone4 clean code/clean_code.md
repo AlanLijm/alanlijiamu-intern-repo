@@ -442,3 +442,79 @@ Each fix reduced the amount a reader has to hold in their head at once: named co
 
 **How can avoiding code smells make future debugging easier?**
 When responsibilities are separated (no god objects, no long functions mixing concerns), a bug can be traced to a specific, narrow piece of code instead of requiring the developer to untangle a large function or class to find which part is misbehaving. Eliminating duplication means a fix only needs to be applied once instead of being replicated across every copy (and no risk of "fixed it in one place, forgot the other"). Flattened conditionals and consistent naming make it faster to read code correctly the first time, reducing the chance of misunderstanding the logic mid-debugging. Overall, less accumulated smell means less friction between "something is broken" and "I understand why."
+
+# 4.9 Writing Unit Tests for Clean Code
+
+## 📖 Research: Why Unit Testing Matters
+- **Tests document intent**: a well-written test shows exactly what a function is supposed to do for a given input, acting as executable documentation that stays accurate (unlike comments, which can drift — see 4.5).
+- **Tests enable safe refactoring**: clean code principles like extracting functions (4.3), removing duplication (4.4), and simplifying logic (4.7) all involve changing a function's internal structure. A test suite lets you make that change and immediately confirm behavior didn't break, rather than manually re-checking every case by hand.
+- **Tests push code toward better design**: functions that are hard to unit test (e.g. they depend on a live database, a network call, or global state) are often a sign the function is doing too much or is too tightly coupled — the same "long function" / "god object" smells from 4.8. Writing tests naturally pressures code toward small, pure, single-responsibility functions.
+- **Tests catch edge cases early**: deliberately writing tests for boundary values (zero, negative numbers, empty arrays, invalid input) surfaces the same edge-case gaps discussed in 4.6, often before the code ever reaches production.
+- **Fast feedback loop**: a unit test runs in milliseconds and can be run on every save, catching regressions far earlier (and cheaper to fix) than a manual test or a bug report from a user.
+
+## 🛠 Framework Chosen: Jest
+Jest was chosen since the onboarding repo (`onboarding-backend-nest-js`) is a NestJS/TypeScript project, and Jest is NestJS's default testing framework (bundled with the standard Nest CLI project setup).
+
+## 🧩 Function Under Test
+Reusing `getShippingCost` from Milestone 4.7 (Refactoring for Simplicity):
+
+```typescript
+const SHIPPING_RATE_PER_KG: Record<string, number> = {
+  standard: 2,
+  express: 5,
+};
+
+function getShippingCost(weight: number, mode: string): number {
+  if (weight == null || weight < 0) {
+    return 0;
+  }
+
+  const ratePerKg = SHIPPING_RATE_PER_KG[mode] ?? SHIPPING_RATE_PER_KG.standard;
+  return weight * ratePerKg;
+}
+```
+
+## ✅ Unit Tests
+
+```typescript
+import { getShippingCost } from './shipping';
+
+describe('getShippingCost', () => {
+  it('calculates standard shipping at 2x weight', () => {
+    expect(getShippingCost(10, 'standard')).toBe(20);
+  });
+
+  it('calculates express shipping at 5x weight', () => {
+    expect(getShippingCost(10, 'express')).toBe(50);
+  });
+
+  it('returns 0 for negative weight', () => {
+    expect(getShippingCost(-5, 'standard')).toBe(0);
+  });
+
+  it('returns 0 for null or undefined weight', () => {
+    expect(getShippingCost(null as unknown as number, 'standard')).toBe(0);
+    expect(getShippingCost(undefined as unknown as number, 'standard')).toBe(0);
+  });
+
+  it('returns 0 for zero weight', () => {
+    expect(getShippingCost(0, 'standard')).toBe(0);
+  });
+
+  it('falls back to the standard rate for an unknown mode', () => {
+    expect(getShippingCost(10, 'overnight-drone')).toBe(20);
+  });
+
+  it('falls back to the standard rate when mode is an empty string', () => {
+    expect(getShippingCost(10, '')).toBe(20);
+  });
+});
+```
+
+## 💭 Reflections
+
+**How do unit tests help keep code clean?**
+Writing these tests confirmed that `getShippingCost` is a small, pure function — no database, no network call, no shared state — which made it trivial to test every case with a plain function call and an assertion. That's a direct result of the earlier refactors (4.3, 4.7): a messier, tangled version of this function (mixed with I/O, or buried inside a larger function) would have been much harder to test in isolation. In that sense, the tests didn't just verify the clean code — writing them retroactively confirms *why* the earlier refactoring toward small, single-purpose functions was worth doing: it's what made fast, isolated testing possible at all.
+
+**What issues did you find while testing?**
+Writing the zero-weight case (`getShippingCost(0, 'standard')`) exposed a subtle edge case worth double-checking: the guard clause only checks `weight == null || weight < 0`, so `0` correctly falls through to the calculation and returns `0 * 2 = 0` — the right answer, but for a different reason than the null/negative guard. It's easy to assume "0 is falsy so it's caught by the guard," which isn't actually true here, and a less careful implementation could have accidentally rejected valid zero-weight orders (e.g. a free digital add-on) if the guard clause had used `!weight` instead of the explicit `== null` check. Writing an explicit test for this case makes that behavior intentional and protected against future regressions, rather than accidentally correct.
