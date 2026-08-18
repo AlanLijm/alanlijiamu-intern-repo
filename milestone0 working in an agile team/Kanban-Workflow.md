@@ -54,5 +54,5 @@ Issues #2, #3, #7, #8, and #9 started in Not Started, moved to In Progress while
 
 By contrast, issues #1, #4, #5, #6, and #10 are still sitting in In Progress, which reflects exactly the overload problem I identified in my reflection — too many tasks started at once without a WIP limit.
 
-One way I can improve task tracking: 
+One way I can improve task tracking:
 Since I currently have five issues sitting In Progress at once, I should apply a personal WIP limit (e.g. no more than 2 issues in progress at a time) so that issues move fully through to Approved before I start new ones, instead of having several open in parallel with none reaching Ready for Review.

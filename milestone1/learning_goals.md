@@ -7,7 +7,7 @@ I hope to get real hands-on experience with backend development in a production-
 
 What skills are you most excited to develop?
 
-I'm most excited to strengthen my backend development skills (NestJS, API design, database work) and get better at collaborative software engineering practices — Git branching strategies, writing clear commits, and working through issues in a structured, milestone-based way. 
+I'm most excited to strengthen my backend development skills (NestJS, API design, database work) and get better at collaborative software engineering practices — Git branching strategies, writing clear commits, and working  through issues in a structured, milestone-based way.
 
 What do you think you can contribute to the team?
 

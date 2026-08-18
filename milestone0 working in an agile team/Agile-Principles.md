@@ -41,7 +41,7 @@ Task
  Summarize the main differences between Scrum and Kanban in your own words.
  Identify one Agile principle you think will be most useful in your work.
 
-Scrum vs. Kanban, in my own words: 
+Scrum vs. Kanban, in my own words:
 Scrum works well for planned, fixed-scope work — it uses fixed-length sprints and clearly defined roles, which gives the team a predictable rhythm to plan around. However, its shortage is flexibility: once a sprint starts, changes are discouraged. Kanban, on the other hand, has high flexibility since work flows continuously and priorities can shift at any time, but this makes outcomes and timelines harder to predict compared to Scrum's fixed sprint commitments.
 
 One Agile principle most useful in my work: (test merge conflicts in main branch)
