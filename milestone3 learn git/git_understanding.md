@@ -1,6 +1,7 @@
 ## PR Reflections — Milestone 3.1
 
 ### Why are PRs important in a team workflow?
+
 PRs make code changes visible and reviewable before they're merged into main.
 They expose not just the final result, but the whole process — commit history,
 line-by-line review comments, and discussion threads. This means:
@@ -12,6 +13,7 @@ line-by-line review comments, and discussion threads. This means:
   the way it was.
 
 ### What makes a well-structured PR?
+
 - A clear, descriptive title and a description that explains *what* changed
   and *why* (not just *what*).
 - Linked to a related issue where relevant, so context isn't lost.
@@ -20,6 +22,7 @@ line-by-line review comments, and discussion threads. This means:
 - Passing CI checks / tests included where applicable.
 
 ### What did you learn from reviewing an open-source PR?
+
 Reviewing a PR on React showed how review comments are often specific and
 line-level rather than general feedback — reviewers point to exact lines and
 explain the reasoning, and authors either push a follow-up commit addressing
@@ -204,7 +207,7 @@ README.md on it. Switched back to `main` and confirmed the change was
 NOT present — `git log --oneline -1` on main showed the previous commit,
 and README.md did not contain the "Branching Practice" section.
 
-## 3.4 Reflections
+## 3.5 Reflections
 
 ### Why is pushing directly to main problematic?
 
@@ -235,7 +238,7 @@ choosing (or combining) which version to keep.
 
 # Milestone 3.6 — Staging vs. Committing
 
-## Evidence
+## 3.6 Evidence
 
 On branch `staging-practice`, modified README.md and walked through the
 full staging lifecycle:
@@ -250,7 +253,7 @@ full staging lifecycle:
    practice section to README"` → `git status` showed
    `nothing to commit, working tree clean` (change fully committed).
 
-## Reflections
+## 3.6 Reflections
 
 ### What is the difference between staging and committing?
 

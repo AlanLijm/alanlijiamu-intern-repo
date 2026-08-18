@@ -7,9 +7,11 @@
 ## What did I use it for?
 
 ### 1. Understanding existing code
+
 I asked Cursor to explain what the project does and its folder structure ("what does this project do? explain the folder structure"). It read through the repo and correctly identified that despite the name, `onboarding-backend-nest-js` is not an actual NestJS backend — it's Focus Bear's intern onboarding/curriculum repo, with a `duplicate-repo` script for bootstrapping a personal repo and milestone folders tracking onboarding progress. It produced a full folder tree and a milestone progression table without me having to explain any of that myself.
 
 ### 2. Debugging
+
 I gave Cursor the same buggy NestJS `findOne` method used earlier with Claude (the `.find(user => user.id = id)` bug — assignment instead of comparison). Cursor correctly identified the bug and additionally laid out a comparison table showing expected vs actual output for several sample calls (`findOne(1)`, `findOne(2)`, `findOne(999)`), which made the impact of the bug very concrete.
 
 ## What it helped with

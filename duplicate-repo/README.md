@@ -43,7 +43,6 @@ To allow the script to create issues, labels, and milestones, you need to genera
 
 ![CleanShot 2025-02-15 at 09 00 34](https://github.com/user-attachments/assets/3e1a7178-95ea-44a9-9f5f-3baaafc76a7a)
 
-
 5. Click **Generate Token** and copy the token (you won’t see it again!).
 
 ---

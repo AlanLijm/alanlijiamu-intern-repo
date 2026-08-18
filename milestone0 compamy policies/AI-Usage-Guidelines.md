@@ -1,13 +1,14 @@
 # AI Usage Guidelines
 
-##  Goal
+## Goal
 
 Understand how to responsibly and effectively use AI tools while maintaining data privacy and critical thinking.
 
-##  Why is this important?
+## Why is this important?
+
 AI tools can boost productivity, but they should be used thoughtfully. Misuse—such as leaking confidential information or relying on AI without critical thinking—can cause serious problems.
 
-##  Research & Learn
+## Research & Learn
 
 ### What AI tools are typically used for your role?
 
@@ -41,7 +42,7 @@ As a software development intern, the AI tools most relevant to my role are GitH
 - Logic: walk through the code yourself to understand every line, rather than copy-pasting blindly
 - Flag uncertain AI output as "AI-generated, needs verification" and put it through normal code review
 
-##  Reflection
+## Reflection
 
 ### When should you use AI for assistance, and when should you rely on your own skills?
 
@@ -55,7 +56,7 @@ I'll treat AI output as a first draft or a starting point, not a final answer �
 
 I will never paste confidential company code, credentials, API keys, or any user/customer data into public AI tools. Where possible, I'll anonymize or use placeholder data when asking for help with a specific problem, and stick to company-approved AI tools/settings if Focus Bear provides any guidance on this.
 
-##  Task
+## Task
 
 ### 1. Identify one task you can improve using an AI tool, and try it out
 

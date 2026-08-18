@@ -115,7 +115,6 @@ function calculateOrderTotal(user: User, order: Order): number {
 
 Applying simplicity, readability, maintainability, consistency, and efficiency turned a nested, duplicated, untyped function into a short, self-documenting one — with the same behavior but far less risk when someone (including future me) needs to change it later.
 
-
 # 4.2 Naming Variables & Functions
 
  Best Practices Researched
@@ -380,6 +379,7 @@ What were the issues with duplicated code? The duplicated validation logic meant
 How did refactoring improve maintainability? After extracting validateEmail and validateAge into shared functions, there's now a single source of truth for each rule. A future change — such as tightening the email format check — only needs to happen in one place and automatically applies everywhere it's used. It also makes the intent clearer: validateUser reads as "run the standard user validation," rather than requiring the reader to compare three near-identical blocks to confirm they actually do the same thing.
 
 # 4.5 Commenting & Documentation
+
  Best Practices Researched
 Comments explain why, not what: the code itself should say what it does (via good naming and structure); comments are for context the code can't express — intent, trade-offs, business reasons, or warnings about non-obvious behavior.
 A needed comment is sometimes a refactoring signal: if a block of code needs a comment like // check if user can checkout, that's often a sign the block should become a function named canUserCheckout() instead — the name replaces the comment.
@@ -415,6 +415,7 @@ getDisc's comments hint at important context ("might be wrong", "don't change un
 The 15% comment restates the literal 0.85 instead of explaining why the discount is 15% (e.g. is it a seasonal promotion? a loyalty tier?).
  Rewritten: Clear Naming + Purposeful Comments
 typescript
+
 /**
  -Sums all values in the given array.
  */
