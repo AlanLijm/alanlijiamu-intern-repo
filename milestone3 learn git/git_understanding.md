@@ -26,9 +26,6 @@ explain the reasoning, and authors either push a follow-up commit addressing
 it or explain their reasoning back. It also showed that merging usually
 requires at least one approval plus passing CI checks, not just a quick glance.
 
-
-
-
 ## Commit Message Reflections — Milestone 3.2
 
 3.2 Writing Meaningful Commit Messages
@@ -41,7 +38,9 @@ A well-structured commit message.
 | Vague | `fix stuff` | `637caf4` |
 | Overly detailed | `Updated the README file to include a new section, made some small formatting changes, also fixed a typo I noticed earlier, and added a line about commit practices while I was at it, plus I reorganized the bullet points slightly and changed the heading level from h2 to h3` | `20f8096` |
 | Well-structured | `docs: add commit message practice section to README` | `1ff4bac` |
+
 ### What makes a good commit message?
+
 A good commit message has a short, clear summary line (ideally under ~50
 characters) using an imperative tone (e.g. "add", "fix", not "added" or
 "fixes"), often prefixed with a type like `feat:`, `fix:`, or `docs:`.
@@ -50,6 +49,7 @@ by a body explaining *why* the change was made — not just repeating *what*
 changed, which is already visible in the diff.
 
 ### How does a clear commit message help in team collaboration?
+
 It lets teammates understand the history of a project without having to
 read every line of code changed. Tools like `git log` and `git blame`
 become genuinely useful for tracing when and why a bug was introduced,
@@ -57,16 +57,17 @@ and reviewers can quickly judge the intent of a change during a PR review
 instead of guessing.
 
 ### How can poor commit messages cause issues later?
+
 Vague messages like "fixed stuff" make it hard to trace when a specific
 bug was introduced or why a change was made, especially months later.
 Overly detailed messages that bundle multiple unrelated changes into one
 commit make it hard to isolate or revert a single change (e.g. with
 `git revert`), and bury the actual purpose of the commit under noise.
 
-
 # Milestone 3.3 — git bisect Practice
 
 ## Bisect Evidence
+
 Created 5 commits on branch `bisect-practice`, introducing a bug at step 4:
 
 | Commit | Message | Hash | Status |
@@ -88,6 +89,7 @@ This matches the commit where `print('step 4' + 5)` was added, causing a
 ## Reflections
 
 ### What does `git bisect` do?
+
 It performs a binary search across a range of commits between a known
 "good" state and a known "bad" state, automatically checking out the
 midpoint commit at each step. By marking each tested commit as good or
@@ -95,6 +97,7 @@ bad, it narrows down the exact commit that introduced a bug in O(log n)
 steps instead of checking every commit one by one.
 
 ### When would you use it in a real-world debugging situation?
+
 When a bug is discovered but it's unclear which of many recent commits
 introduced it — for example, a test suite starts failing on CI and no one
 remembers exactly when it broke. Instead of guessing or reading through
@@ -102,6 +105,7 @@ dozens of commits, `git bisect` (optionally combined with `git bisect run`
 and an automated test script) can pinpoint the exact commit quickly.
 
 ### How does it compare to manually reviewing commits?
+
 Manually reviewing commits one by one is a linear search — with a long
 history, that could mean checking dozens or hundreds of commits. Bisect
 cuts that down logarithmically (e.g. ~100 commits takes only ~7 tests
@@ -111,6 +115,7 @@ test rather than reading diffs and guessing what might be the cause.
 # Milestone 3.4 — Advanced Git Commands
 
 ## 1. `git checkout main -- <file>`
+
 Modified README.md on branch `advanced-git-practice` (appended "temporary
 bad edit"). Confirmed with `git diff` that the change existed, then ran:
 
@@ -121,6 +126,7 @@ the file was fully restored to main's version, with no effect on any
 other files in the working directory.
 
 ## 2. `git cherry-pick <commit>`
+
 Created a new commit on `advanced-git-practice`:
 `9f82045 feat: add cherry pick test file`
 
@@ -149,9 +155,10 @@ Every line was attributed to the same commit (`2ce8dd7c`, Jiamu Li,
 2026-08-12) — showing the file hasn't been permanently modified since
 that commit, and confirming the earlier `checkout` test left no trace.
 
-## Reflections
+## 3.4 Reflections
 
 ### What does each command do?
+
 - `git checkout main -- <file>`: restores a single file to its version
   on another branch (here, main), without touching any other files or
   the rest of the working directory.
@@ -165,6 +172,7 @@ that commit, and confirming the earlier `checkout` test left no trace.
   each line and who authored it.
 
 ### When would you use it in a real project?
+
 - `checkout -- <file>` is useful when a specific file gets accidentally
   broken or you want to discard local edits to just one file, without
   losing other in-progress work.
@@ -178,28 +186,28 @@ that commit, and confirming the earlier `checkout` test left no trace.
   — especially when debugging.
 
 ### What surprised you while testing these commands?
+
 Cherry-pick doesn't move or share the same commit hash across branches
 — it creates an entirely new commit, even though the content and
 message are identical. This makes sense once you think about it (each
 commit's hash depends on its parent), but it wasn't obvious until seeing
 `852f090` and `9f82045` side-by-side in the `--graph` output.
 
-
-
-
 ---
 
 # Milestone 3.5 — Branching & Team Collaboration
 
 ## Evidence
+
 Created a new branch `branching-practice`, committed a change to
 README.md on it. Switched back to `main` and confirmed the change was
 NOT present — `git log --oneline -1` on main showed the previous commit,
 and README.md did not contain the "Branching Practice" section.
 
-## Reflections
+## 3.4 Reflections
 
 ### Why is pushing directly to main problematic?
+
 `main` is usually treated as the stable, deployable version of the
 project. Pushing directly to it skips code review and any CI checks,
 so untested or broken code can reach everyone immediately — including
@@ -207,6 +215,7 @@ anyone else building on top of main, or a live deployment pulling from
 it. It also leaves no discussion trail explaining why a change was made.
 
 ### How do branches help with reviewing code?
+
 Branches isolate a change from main until it's ready. This means a PR
 can be opened, reviewed, and tested (e.g. via CI) without affecting
 anyone else's work or the stable version of the code. Only after
@@ -214,6 +223,7 @@ approval does the change get merged in, so main always reflects
 reviewed, agreed-upon work.
 
 ### What happens if two people edit the same file on different branches?
+
 Each person's commits stay independent on their own branch and don't
 interfere with each other while they're working. The conflict only
 surfaces when merging: if they changed different parts of the file, git

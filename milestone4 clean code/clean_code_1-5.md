@@ -195,13 +195,13 @@ async function handleOrderSubmission(orderData: any): Promise<any> {
   // calculate total
   let total = 0;
   for (const item of orderData.items) {
-    total += item.price * item.quantity;
+    total += item.price*item.quantity;
   }
   if (orderData.couponCode) {
     if (orderData.couponCode === 'SAVE10') {
-      total = total * 0.9;
+      total = total*0.9;
     } else if (orderData.couponCode === 'SAVE20') {
-      total = total * 0.8;
+      total = total*0.8;
     }
   }
 
@@ -253,13 +253,13 @@ function validateOrder(orderData: OrderData): void {
 
 function calculateOrderTotal(orderData: OrderData): number {
   const subtotal = orderData.items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + item.price*item.quantity,
     0,
   );
   const discountRate = orderData.couponCode
     ? COUPON_DISCOUNTS[orderData.couponCode] ?? 0
     : 0;
-  return subtotal * (1 - discountRate);
+  return subtotal*(1 - discountRate);
 }
 
 async function saveOrder(orderData: OrderData, total: number) {
