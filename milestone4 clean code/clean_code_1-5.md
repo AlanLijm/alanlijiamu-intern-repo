@@ -111,7 +111,7 @@ function calculateOrderTotal(user: User, order: Order): number {
 - **Early returns instead of nesting**: guard clauses (`amount <= 0`, `status !== 'active'`) flatten the logic to a single level.
 - **Named constants instead of magic numbers**: discount rates are documented by the map they live in rather than bare literals scattered through the code.
 
-##  Summary
+## Summary
 
 Applying simplicity, readability, maintainability, consistency, and efficiency turned a nested, duplicated, untyped function into a short, self-documenting one — with the same behavior but far less risk when someone (including future me) needs to change it later.
 
@@ -414,7 +414,8 @@ The comment on proc (// function to process data) is vague and doesn't say what 
 getDisc's comments hint at important context ("might be wrong", "don't change unless told to") but don't explain why — who told them, what the correct rate should be, or what would break if changed. This is a warning sign without enough information to act on it.
 The 15% comment restates the literal 0.85 instead of explaining why the discount is 15% (e.g. is it a seasonal promotion? a loyalty tier?).
  Rewritten: Clear Naming + Purposeful Comments
-typescript
+
+```typescript
 
 /**
  -Sums all values in the given array.
@@ -434,6 +435,8 @@ function applyLoyaltyDiscount(price: number): number {
   const LOYALTY_DISCOUNT_RATE = 0.15;
   return price*(1 - LOYALTY_DISCOUNT_RATE);
 }
+```
+
 Why this is better
 sumValues and applyLoyaltyDiscount are self-explanatory from their names alone — the line-by-line "what" comments are no longer needed because the code (plus a short doc comment) already says what happens.
 The doc comment on sumValues documents its public contract in one line, useful to anyone calling it without reading the body.
