@@ -35,7 +35,7 @@ async function processRefund(orders, orderId) {
 }
 ```
 
-### Problems
+### 4.6 Problems
 
 - `getDiscountedPrice` doesn't validate its inputs: a negative `price`, a `discountPercent` over 100, or non-numeric input (e.g. `undefined`) all silently produce a nonsensical result (like a negative price) instead of failing clearly.
 - `findUserOrder` returns `undefined` when no match is found, with no signal to the caller that this is a real possibility they need to handle.
@@ -100,7 +100,7 @@ async function processRefund(orders: Order[], orderId: string): Promise<number> 
 - **The payment gateway call is wrapped in a try/catch** that re-throws with context (which order failed and why), instead of letting a raw, unexplained rejection propagate up.
 - **Edge cases are handled explicitly**: missing `orderId`, an order that doesn't exist, and a downstream payment failure are each a distinct, named path instead of one generic crash.
 
-## 💭 Reflections
+## 💭 4.6 Reflections
 
 **What was the issue with the original code?**
 The original functions assumed their inputs would always be valid and that every operation would succeed, so there was no code path for the cases where that assumption breaks — an order not being found, a bad discount value, or a failed refund call. This meant failures showed up as raw, unhandled exceptions (like a `TypeError` on `order.total`) rather than clear, meaningful errors, making it hard to tell *why* something failed or to distinguish an expected case (order not found) from a genuine bug.
@@ -168,7 +168,7 @@ function getShippingCost(weight: number, mode: string): number {
 }
 ```
 
-### Problems
+### 4.7 Problems
 
 - A full **Strategy + Factory pattern** (two classes, an interface, and a factory) is used for what is really just two flat rate multipliers (`2` and `5`) — this is over-engineering for a problem that doesn't need runtime-swappable, extensible strategy objects.
 - The unused `factory` variable in `getShippingCost` is dead code left over from a partial refactor.
@@ -194,7 +194,7 @@ function getShippingCost(weight: number, mode: string): number {
 }
 ```
 
-### Why this is better
+### 4.7 Why this is better
 
 - The **Strategy/Factory classes are replaced with a lookup table** (`SHIPPING_RATE_PER_KG`), since the "strategies" were really just two constant rates — no polymorphism or extensibility was actually needed. Adding a new shipping mode is now a one-line addition to the map instead of a new class plus a factory branch.
 - **Guard clause** (`if (weight == null || weight < 0) return 0;`) replaces the nested if/else, making the invalid-input rule immediately visible at the top of the function.
@@ -202,7 +202,7 @@ function getShippingCost(weight: number, mode: string): number {
 - The **dead `factory` variable is removed**.
 - The whole implementation is now readable in one function instead of requiring a reader to trace through five separate declarations.
 
-## 💭 Reflections
+## 💭 4.7 Reflections
 
 **What made the original code complex?**
 The original code was complex mainly because of over-engineering: it used a full Strategy + Factory design pattern to represent what was actually just two constant multipliers, adding four extra pieces of structure (an interface and three classes) for a problem that didn't need runtime extensibility. On top of that, the weight validation used unnecessarily nested conditionals for a simple rule, there was leftover dead code (the unused `factory` variable), and the shipping rates were unexplained magic numbers — none of which added any real value, but all of which added places a reader had to check to understand one simple calculation.
@@ -292,6 +292,7 @@ Writing the zero-weight case (`getShippingCost(0, 'standard')`) exposed a subtle
 # 4.10 Code Formatting & Style Guides
 
 ## 📖 Research: Why Consistent Code Style Matters
+
 - **Removes bikeshedding**: without an enforced style, developers spend time debating tabs vs spaces, quote style, or where to put a brace — decisions with no real impact on correctness. A style guide + automated enforcement settles these once, for the whole team.
 - **Makes diffs meaningful**: when formatting is inconsistent, a small logic change can produce a noisy diff full of unrelated whitespace/quote changes, making code review harder and hiding the actual change. Consistent formatting keeps diffs focused on real changes.
 - **Lowers the cost of reading unfamiliar code**: everyone benefits when every file "looks the same" — a reader doesn't need to adjust to each author's personal style when moving between files.
@@ -299,7 +300,9 @@ Writing the zero-weight case (`getShippingCost(0, 'standard')`) exposed a subtle
 - **Automation removes human error and friction**: manually enforcing style during code review is slow and inconsistent between reviewers. A formatter (Prettier) and linter (ESLint) run automatically, catching issues before a human reviewer even looks at the code.
 
 ## 📚 Airbnb JavaScript Style Guide — Key Points Reviewed
+
 The [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) is one of the most widely adopted style guides in the JS/TS ecosystem. Notable conventions relevant to this project:
+
 - Prefer `const` over `let`, and never use `var` — avoids accidental reassignment and scoping bugs.
 - Always use `===`/`!==` instead of `==`/`!=` to avoid type-coercion bugs (with `== null` commonly allowed as an intentional shorthand for "null or undefined").
 - Use template literals (`` `Hello ${name}` ``) instead of string concatenation.
@@ -403,6 +406,7 @@ function greet(name) {
 ```
 
 **First lint run — 18 problems:**
+
 - 14 Prettier formatting errors — mostly stray `␍` characters (Windows CRLF line endings not matching the project's expected line endings), plus missing semicolons and inconsistent quote style.
 - 4 real `@typescript-eslint/no-unused-vars` errors — `userName`, `unusedVar`, `calculateTax`, and `greet` were all declared but never used anywhere.
 
@@ -430,12 +434,12 @@ console.log(userName, calculateTax(100), greet(userName));
 
 Final lint run: **0 problems.**
 
-## 💭 Reflections
+## 💭4.10 Reflections
 
-**Why is code formatting important? **
+**Why is code formatting important?**
 Consistent formatting keeps code review and diffs focused on real logic changes instead of whitespace or quote-style noise. It also removes decisions individual developers would otherwise make inconsistently (tabs vs spaces, quote style) — the tool decides once, for everyone, instead of relying on each contributor remembering the convention.
 
-**What issues did the linter detect? **
+**What issues did the linter detect?**
 The first run found 18 problems: 14 were Prettier formatting issues (mostly CRLF line-ending mismatches from Windows, plus missing semicolons and quote style), and 4 were genuine no-unused-vars errors for declarations that were never called anywhere in the file. eslint --fix cleared all 14 formatting issues automatically but correctly left the 4 unused-variable errors for manual review, since only a human can decide whether an unused declaration is dead code to delete or something that should actually be used.
 
 Fixing those 4 manually also surfaced a real bug: I first wrote return 'Hello, ${name}'; with single quotes instead of backticks, so the ${name} interpolation wouldn't actually have worked at runtime — it would have printed the literal text ${name} rather than the value of name. This was caught through manual code review, not by ESLint or Prettier. I confirmed this directly by reverting the line to the single-quote version and re-running the linter: it reported only a cosmetic quote-style suggestion ('Hello, ${name}' → "Hello, ${name}") with no indication that the interpolation was broken, since the line is syntactically valid — the tool has no way to know ${name} was meant to be evaluated. This confirmed that linting/formatting checks syntax and style, not intent, and doesn't substitute for actually reading (or testing) the logic — it complements testing (4.9) rather than replacing it.
@@ -444,3 +448,4 @@ Setting this up on Windows with this project's ESLint version also surfaced two 
 
 **Did formatting the code make it easier to read?**
  Yes — the file went from mixed line endings, inconsistent quotes, and unused, dead-looking declarations to a short, consistently formatted file where every value is actually used and its purpose is clear. The process also caught a genuine logic bug (the wrong quote type breaking string interpolation) that would likely have been missed on a casual read, reinforcing that the setup effort for linting/formatting pays off even on a small file.
+ 
