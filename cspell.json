@@ -2,7 +2,7 @@
   "version": "0.2",
   "language": "en",
   "words": [
-  "NestJS",
+"NestJS",
   "onboarding",
   "eslint",
   "prettier",
@@ -16,7 +16,26 @@
   "Validatable",
   "bikeshedding",
   "oneline",
-  "alanlijiamu"
+  "alanlijiamu",
+  "behaviour",
+  "behavioural",
+  "Bitwarden",
+  "anonymised",
+  "organisational",
+  "minimise",
+  "autoplay",
+  "colours",
+  "colour",
+  "customisable",
+  "reprioritize",
+  "reprioritizes",
+  "neurotypical",
+  "Tiimo",
+  "Routinery",
+  "focusbear",
+  "blocklist",
+  "Pomodoro",
+  "Jiamu"
   ],
   "ignorePaths": ["node_modules/**"]
 }
