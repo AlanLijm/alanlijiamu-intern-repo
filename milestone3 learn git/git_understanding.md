@@ -1,4 +1,4 @@
-## PR Reflections — Milestone 3.1
+# PR Reflections — Milestone 3.1
 
 ### Why are PRs important in a team workflow?
 

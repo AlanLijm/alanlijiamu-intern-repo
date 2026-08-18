@@ -1,4 +1,4 @@
-Get to Know the Focus Bear Product
+# Get to Know the Focus Bear Product
 
 3-5 Things About How the App Is Meant to Work (Relevant to My Role — Backend Development)
 Blocking lists are persistent, per-user data. Users can permanently block specific apps/websites, and this needs to be stored and stay consistent across devices (desktop and mobile). From a backend perspective, this implies a per-user blocklist data model that supports sync across platforms.

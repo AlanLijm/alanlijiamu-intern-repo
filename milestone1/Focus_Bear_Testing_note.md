@@ -1,4 +1,4 @@
-First-Time User Experience Assignment — Focus Bear App
+# 1.2 First-Time User Experience Assignment — Focus Bear App
 Reflection
 
 I approached the Focus Bear app as a brand-new user who had never seen it before. Overall, the core habit and task management flow is functional, but I ran into several moments of confusion — some caused by actual bugs (functionality not matching what was described), and others caused by unclear UI/visual design choices. Below are the 5 issues I found, each with steps to reproduce and a suggested fix. I also logged these as bug reports / improvement ideas on team.focusbear.io.

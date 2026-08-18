@@ -20,7 +20,7 @@ cd C:\Users\...\OneDrive - Swinburne University\Semester4\intern\focus bear\onbo
 
 fails with:
 
-```
+```powershell
 Set-Location : A positional parameter cannot be found that accepts argument '-'.
 ```
 
