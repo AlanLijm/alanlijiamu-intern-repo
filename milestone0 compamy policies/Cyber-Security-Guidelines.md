@@ -33,4 +33,6 @@ Tasks
  computer: currently blocked by a Windows activation issue (installed edition doesn't match the device's licensed  edition, mid-fix); will complete once resolved
  
  
-New habit I will follow at Focus Bear: enable 2FA immediately on any new account I create (work or personal), and manually lock my screen whenever I step away from my desk instead of relying only on the auto-lock timeout as a backup.
+New habit I will follow at Focus Bear: enable 2FA immediately on any new account I create (work or personal), and
+ manually lock my screen whenever I step away from my desk instead of relying only on the auto-lock timeout as a
+backup.
