@@ -1,5 +1,5 @@
 # CI Test File
 
-### Skipped Heading Level
+## Skipped Heading Level
 
-This is a testt file to verify the CI lint workflow.
+This is a test file to verify the CI lint workflow.

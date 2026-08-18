@@ -390,7 +390,7 @@ function proc(arr: number[]): number {
   return t;
 }
 
-// this is a discount, dont change unless told to
+// this is a discount, don't change unless told to
 // old logic from before, might be wrong
 function getDisc(p: number): number {
   return p * 0.85; // 15% off

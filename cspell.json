@@ -2,16 +2,21 @@
   "version": "0.2",
   "language": "en",
   "words": [
-    "NestJS",
-    "onboarding",
-    "eslint",
-    "prettier",
-    "typescript",
-    "milestone",
-    "airbnb",
-    "guard",
-    "refactor",
-    "unindent"
+  "NestJS",
+  "onboarding",
+  "eslint",
+  "prettier",
+  "typescript",
+  "milestone",
+  "airbnb",
+  "guard",
+  "refactor",
+  "unindent",
+  "stringly",
+  "Validatable",
+  "bikeshedding",
+  "oneline",
+  "alanlijiamu"
   ],
   "ignorePaths": ["node_modules/**"]
 }
