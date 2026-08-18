@@ -8,6 +8,7 @@ A "code smell" isn't a bug — the code still works — but it's a surface-level
 ## 1. Magic Numbers & Strings
 
 **Smell:**
+
 ```typescript
 function calculateTax(price: number): number {
   return price * 0.0825; // what does this number mean?
@@ -19,6 +20,7 @@ if (user.role === 'A') {
 ```
 
 **Fix:**
+
 ```typescript
 const SALES_TAX_RATE = 0.0825;
 
@@ -34,6 +36,7 @@ if (user.role === UserRole.Admin) {
   grantAdminAccess();
 }
 ```
+
 Named constants and enums document what a literal *means*, and centralize the value so it only needs to change in one place.
 
 ---
@@ -41,6 +44,7 @@ Named constants and enums document what a literal *means*, and centralize the va
 ## 2. Long Functions
 
 **Smell:**
+
 ```typescript
 async function registerUser(data: any) {
   if (!data.email.includes('@')) throw new Error('bad email');
@@ -54,6 +58,7 @@ async function registerUser(data: any) {
 ```
 
 **Fix:**
+
 ```typescript
 function validateRegistration(data: RegistrationData): void {
   if (!data.email.includes('@')) throw new Error('bad email');
@@ -73,6 +78,7 @@ async function registerUser(data: RegistrationData) {
   return user;
 }
 ```
+
 Splitting validation and persistence into named functions makes `registerUser` read as a short list of steps (see 4.3 for the full technique).
 
 ---
@@ -80,6 +86,7 @@ Splitting validation and persistence into named functions makes `registerUser` r
 ## 3. Duplicate Code
 
 **Smell:**
+
 ```typescript
 function formatUserName(user: { first: string; last: string }) {
   return user.first.trim() + ' ' + user.last.trim();
@@ -91,11 +98,13 @@ function formatAuthorName(author: { first: string; last: string }) {
 ```
 
 **Fix:**
+
 ```typescript
 function formatFullName(person: { first: string; last: string }): string {
   return `${person.first.trim()} ${person.last.trim()}`;
 }
 ```
+
 One shared function instead of two identical ones — a formatting change now only needs to happen once (see 4.4 for the full DRY discussion).
 
 ---
@@ -103,6 +112,7 @@ One shared function instead of two identical ones — a formatting change now on
 ## 4. Large Classes (God Objects)
 
 **Smell:**
+
 ```typescript
 class UserManager {
   createUser(data: any) { /* ... */ }
@@ -116,6 +126,7 @@ class UserManager {
 ```
 
 **Fix:**
+
 ```typescript
 class UserRepository {
   createUser(data: UserData) { /* ... */ }
@@ -139,6 +150,7 @@ class ActivityLogger {
   logUserActivity(user: User, action: string) { /* ... */ }
 }
 ```
+
 `UserManager` was handling persistence, email, invoicing, loyalty, and logging — five unrelated responsibilities in one class. Splitting by responsibility means each class has one reason to change, and can be tested and understood independently.
 
 ---
@@ -146,6 +158,7 @@ class ActivityLogger {
 ## 5. Deeply Nested Conditionals
 
 **Smell:**
+
 ```typescript
 function getShippingLabel(order: any) {
   if (order) {
@@ -166,6 +179,7 @@ function getShippingLabel(order: any) {
 ```
 
 **Fix:**
+
 ```typescript
 function getShippingLabel(order: Order | null): string {
   if (!order?.address) return 'unknown';
@@ -173,6 +187,7 @@ function getShippingLabel(order: Order | null): string {
   return order.weight <= 20 ? 'domestic-standard' : 'domestic-heavy';
 }
 ```
+
 Guard clauses flatten four levels of nesting into a linear sequence of checks, so the reader doesn't need to hold multiple open conditions in their head at once (see 4.6/4.7).
 
 ---
@@ -180,6 +195,7 @@ Guard clauses flatten four levels of nesting into a linear sequence of checks, s
 ## 6. Commented-Out Code
 
 **Smell:**
+
 ```typescript
 function calculateTotal(items: Item[]): number {
   // old version, kept in case new version breaks
@@ -194,11 +210,13 @@ function calculateTotal(items: Item[]): number {
 ```
 
 **Fix:**
+
 ```typescript
 function calculateTotal(items: Item[]): number {
   return items.reduce((sum, item) => sum + item.price, 0);
 }
 ```
+
 Commented-out code adds clutter and creates doubt about whether it's still needed. Version control (git history) already preserves the old implementation, so it can be safely deleted — there's no need to keep a dead copy inline.
 
 ---
@@ -213,11 +231,13 @@ function retrieve_account(id: string) { /* ... */ }
 ```
 
 **Fix:**
+
 ```typescript
 function getUser(id: string) { /* ... */ }
 function getCustomer(id: string) { /* ... */ }
 function getAccount(id: string) { /* ... */ }
 ```
+
 Three functions doing the same kind of operation (fetch a single record by id) used three different verbs (`get`/`fetch`/`retrieve`), an abbreviation (`Usr`), and a mismatched naming case (`snake_case` vs `camelCase`). Standardizing on one verb and one casing convention makes the API predictable — a developer can guess the name of a new "get by id" function without checking docs.
 
 ---

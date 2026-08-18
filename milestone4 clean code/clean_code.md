@@ -309,13 +309,16 @@ These conventions connect back to earlier milestones — e.g. `===`/`== null` ti
 The onboarding repo (`onboarding-backend-nest-js`) turned out to be a milestone-based practice repo rather than a running NestJS service — it has no `src` folder, `tsconfig.json`, or Nest CLI scaffolding. Setup was done from scratch, and the process surfaced several real compatibility issues along the way (documented below rather than glossed over, since working through them was itself part of the exercise).
 
 **Install dependencies:**
+
 ```powershell
 npm install --save-dev eslint prettier eslint-config-prettier eslint-plugin-prettier @typescript-eslint/parser @typescript-eslint/eslint-plugin
 npm install --save-dev @eslint/js@8.57.1 globals
 ```
+
 (`eslint-config-airbnb-base` and `eslint-plugin-import` were installed initially to follow the Airbnb guide directly, but were dropped — Airbnb's config doesn't yet support ESLint's flat config format, so `@typescript-eslint/recommended` was used instead as a widely-adopted equivalent, applying the same Airbnb conventions reviewed above as manual rules.)
 
 **`eslint.config.mjs`** (flat config — required because this project uses ESLint 8.57.1, where flat config exists but isn't the default the way it is in ESLint 9+):
+
 ```javascript
 import js from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
@@ -355,6 +358,7 @@ export default [
 ```
 
 **`.prettierrc`:**
+
 ```json
 {
   "singleQuote": true,
@@ -366,6 +370,7 @@ export default [
 ```
 
 **Running lint** (ESLint 8.57.1 needs an explicit environment variable to use flat config):
+
 ```powershell
 $env:ESLINT_USE_FLAT_CONFIG="true"; npx eslint "milestone4 clean code/lint-demo.ts"
 $env:ESLINT_USE_FLAT_CONFIG="true"; npx eslint "milestone4 clean code/lint-demo.ts" --fix
@@ -374,6 +379,7 @@ $env:ESLINT_USE_FLAT_CONFIG="true"; npx eslint "milestone4 clean code/lint-demo.
 ## 🧩 What Actually Happened: Before → After
 
 **Before (`lint-demo.ts`):**
+
 ```typescript
 var userName = "Alan"
 let unusedVar = 5
@@ -399,6 +405,7 @@ function greet(name) {
 **After `eslint --fix`:** all 14 formatting issues were resolved automatically. The 4 unused-variable errors were correctly left untouched — ESLint won't guess whether an unused declaration should be deleted or actually used, so that's a decision for a human.
 
 **After (manually resolved, then re-formatted):**
+
 ```typescript
 const userName = 'Alan';
 
@@ -416,6 +423,7 @@ function greet(name: string | null): string {
 
 console.log(userName, calculateTax(100), greet(userName));
 ```
+
 Final lint run: **0 problems.**
 
 ## 💭 Reflections
