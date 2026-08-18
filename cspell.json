@@ -1,0 +1,17 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "NestJS",
+    "onboarding",
+    "eslint",
+    "prettier",
+    "typescript",
+    "milestone",
+    "airbnb",
+    "guard",
+    "refactor",
+    "unindent"
+  ],
+  "ignorePaths": ["node_modules/**"]
+}
