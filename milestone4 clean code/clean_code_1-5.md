@@ -416,18 +416,18 @@ The 15% comment restates the literal 0.85 instead of explaining why the discount
  Rewritten: Clear Naming + Purposeful Comments
 typescript
 /**
- - Sums all values in the given array.
+ -Sums all values in the given array.
  */
 function sumValues(values: number[]): number {
   return values.reduce((total, value) => total + value, 0);
 }
 
 /**
- - Applies the standard loyalty-tier discount (15%).
+ -Applies the standard loyalty-tier discount (15%).
  -
- - NOTE: This rate is set by the Marketing team's Q3 promotion
- - (see ticket MKT-482) and is intentionally hardcoded until the
- - promotions service (planned for Q4) replaces it.
+ -NOTE: This rate is set by the Marketing team's Q3 promotion
+ -(see ticket MKT-482) and is intentionally hardcoded until the
+ -promotions service (planned for Q4) replaces it.
  */
 function applyLoyaltyDiscount(price: number): number {
   const LOYALTY_DISCOUNT_RATE = 0.15;

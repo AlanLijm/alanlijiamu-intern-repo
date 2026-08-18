@@ -64,26 +64,34 @@ npm install
 ```
 
 #### **Create a `.env` File**
+
 1. Copy the example file:
    ```sh
+
    cp .env.sample .env
    ```
+
 2. Open `.env` and edit the following:
    ```ini
+
    GITHUB_TOKEN=your_github_token_here
    SOURCE_REPO=Focus-Bear/onboarding-backend-nest-js
    DEST_REPO=your-username-intern-repo
    ```
+
    - Replace `your_github_token_here` with your **GitHub Personal Access Token**.
    - Replace `your-username-intern-repo` with your **new repository name**.
 
 #### **Run the Script**
+
 ```sh
 node duplicate-repo.js
 ```
+
 This will **copy all issues, labels, and milestones** into your new repository.
 
 ### **5️⃣ Verify Your Repository**
+
 1. Go to your new repository on GitHub.
 2. Check that:
    - Issues have been copied ✅
@@ -91,12 +99,14 @@ This will **copy all issues, labels, and milestones** into your new repository.
    - Milestones are present ✅
 
 ### **6️⃣ Start Working on Issues!**
+
 - Now that your repository is set up, you can start working through the issues.
 - **Ask for help** if you run into problems! We’re here to support you. 😊
 
 ---
 
 ## ❓ Troubleshooting
+
 - **GitHub API rate limit exceeded?**
   - Wait a few minutes or generate a new token with higher rate limits.
 - **Issues/labels not appearing?**
@@ -109,4 +119,5 @@ This will **copy all issues, labels, and milestones** into your new repository.
 ---
 
 ## 🎉 Congratulations!
+
 You have successfully set up your own project repository! Now, move on to your first assigned issue and get started. 🚀

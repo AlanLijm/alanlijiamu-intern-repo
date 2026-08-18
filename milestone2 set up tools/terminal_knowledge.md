@@ -13,21 +13,27 @@ Explored the Settings panel (color scheme, starting directory, font) to personal
 The most useful lesson wasn't a single command, but a gotcha with `cd`: **paths containing spaces must be wrapped in quotes** in PowerShell.
 
 Running this without quotes:
+
 ```powershell
 cd C:\Users\...\OneDrive - Swinburne University\Semester4\intern\focus bear\onboarding-backend-nest-js
 ```
+
 fails with:
+
 ```
 Set-Location : A positional parameter cannot be found that accepts argument '-'.
 ```
+
 because PowerShell splits the command on spaces and treats `-` as a flag.
 
 The fix is to quote the whole path:
+
 ```powershell
 cd "C:\Users\...\OneDrive - Swinburne University\Semester4\intern\focus bear\onboarding-backend-nest-js"
 ```
 
 After that, basic navigation commands worked as expected:
+
 ```powershell
 dir          # list files/folders in the current directory
 git status   # check repo status
