@@ -449,4 +449,3 @@ Setting this up on Windows with this project's ESLint version also surfaced two 
 **Did formatting the code make it easier to read?**
  Yes — the file went from mixed line endings, inconsistent quotes, and unused, dead-looking declarations to a  short, consistently formatted file where every value is actually used and its purpose is clear. The process also  caught a genuine logic bug (the wrong quote type breaking string interpolation) that would likely have been
  missed on a casual read, reinforcing that the setup effort for linting/formatting pays off even on a small file.
- 

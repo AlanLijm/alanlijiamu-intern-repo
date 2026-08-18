@@ -14,6 +14,7 @@
 ### What types of data are considered confidential at Focus Bear?
 
 Based on the privacy policy, the following types of data are treated as confidential and require careful handling:
+
 - **Identification Data**: user emails, phone numbers, login credentials
 - **Social/Habit Data**: user-created habits, which can indirectly reveal lifestyle, religion, or health information (this is double-encrypted)
 - **Special Category Data**: data implying religious beliefs or health conditions (e.g. habits like "Morning insulin" or survey answers about ADHD/autism)
@@ -22,6 +23,7 @@ Based on the privacy policy, the following types of data are treated as confiden
 - **Technical/Device Data**: device logs and crash reports tied to a specific user
 
 In addition to user data, as an intern I should also treat the following as confidential:
+
 - Internal company documents, source code, and unreleased features
 - Internal communications and HR-related information
 - Any credentials or API keys used to access Focus Bear's systems
@@ -41,6 +43,7 @@ In addition to user data, as an intern I should also treat the following as conf
 The privacy policy confirms Focus Bear has a formal security breach management process and technical/organisational measures to protect data confidentiality, integrity and availability, and to report breaches to the Supervisory Authority under GDPR.
 
 As a general best practice, if I suspected a data breach or accidental disclosure, I would:
+
 - Not attempt to hide, minimise, or independently "fix" the issue
 - Immediately report it to my team leader or manager
 - Provide as much detail as possible (what data, how it happened, when noticed)
@@ -67,8 +70,8 @@ One common mistake is discussing confidential data in a public or unsecured envi
 
 ## Task
 
-### Identify at least one habit or practice you can adopt to improve data security in your role.
+### Identify at least one habit or practice you can adopt to improve data security in your role
 I will adopt the habit of only opening one confidential document at a time and closing it immediately after use, instead of leaving multiple sensitive files open in the background where they could be seen or accessed unintentionally.
 
-### Document at least one key learning or security measure you will implement.
+### Document at least one key learning or security measure you will implement
 I will only share confidential documents through official, company-approved software, and will avoid storing any confidential data in personal cloud storage. Going forward, I will make sure any sensitive files I work with stay within official, secured systems, and I will delete local copies once they are no longer needed.

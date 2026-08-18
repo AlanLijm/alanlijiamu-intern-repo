@@ -17,11 +17,13 @@ As a software development intern, the AI tools most relevant to my role are GitH
 ### What are the benefits and risks of using AI in a professional setting?
 
 **Benefits:**
+
 - Speeds up coding (autocomplete, boilerplate)
 - Helps learn new frameworks/APIs faster
 - Assists with writing documentation, comments, commit messages
 
 **Risks:**
+
 - Generated code may contain bugs, security issues, or outdated patterns
 - Risk of leaking confidential company/client data if pasted into public AI tools
 - Over-reliance can erode understanding, making it hard to debug issues later

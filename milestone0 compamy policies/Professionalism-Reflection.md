@@ -5,6 +5,7 @@
 ### What are examples of professional vs. unprofessional behaviour in a casual work environment?
 
 **Professional behaviour:**
+
 - Responding to messages within a reasonable time, even if just to say "got it, will follow up"
 - Being on time (or giving notice) for meetings
 - Giving credit to teammates, not taking sole credit for shared work
@@ -12,6 +13,7 @@
 - Keeping jokes/humour light and inclusive — nothing that targets a person or group
 
 **Unprofessional behaviour:**
+
 - Ignoring messages for long periods without acknowledgement
 - Repeatedly missing deadlines without communicating
 - Making jokes that put down or exclude a teammate

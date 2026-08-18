@@ -424,7 +424,7 @@ function sumValues(values: number[]): number {
 }
 
 /**
- -Applies the standard loyalty-tier discount (15%).
+ -Applies the standard loyalty-tier discount (15%)
  -
  -NOTE: This rate is set by the Marketing team's Q3 promotion
  -(see ticket MKT-482) and is intentionally hardcoded until the

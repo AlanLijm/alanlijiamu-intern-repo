@@ -34,6 +34,7 @@ To allow the script to create issues, labels, and milestones, you need to genera
 3. Call it something like "Clone Focus Bear onboarding repo"
 4. Set the following **permissions**:
    - **Repository Access:** Select **"Select repositories"** and choose **only your new repository**.
+5. Click **Generate Token** and copy the token (you won’t see it again!).
 
 ![CleanShot 2025-02-15 at 08 38 42](https://github.com/user-attachments/assets/3b9b8caa-b710-4706-bb53-b3d846f2de7e)
 
@@ -42,8 +43,6 @@ To allow the script to create issues, labels, and milestones, you need to genera
   - Metadata → **Read**
 
 ![CleanShot 2025-02-15 at 09 00 34](https://github.com/user-attachments/assets/3e1a7178-95ea-44a9-9f5f-3baaafc76a7a)
-
-5. Click **Generate Token** and copy the token (you won’t see it again!).
 
 ---
 
@@ -127,6 +126,6 @@ This will **copy all issues, labels, and milestones** into your new repository.
 
 ---
 
-## 🎉 Congratulations!
+## 🎉 Congratulations
 
 You have successfully set up your own project repository! Now, move on to your first assigned issue and get started. 🚀
