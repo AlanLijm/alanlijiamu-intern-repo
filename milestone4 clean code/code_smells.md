@@ -1,6 +1,7 @@
 # 4.8 Identifying & Fixing Code Smells
 
 ## 📖 Research: Common Code Smells and Their Impact
+
 A "code smell" isn't a bug — the code still works — but it's a surface-level signal that the underlying design has a problem that will likely cause pain later: harder debugging, higher risk when changing code, and slower onboarding for new developers. Smells matter because they compound: a codebase with many small smells becomes disproportionately harder to work in than the sum of its individual issues, since problems interact (e.g. duplicated code inside a long function inside a god object). Below are the seven smells covered here, with a "before" example, a fix, and why the fix helps.
 
 ---
@@ -224,6 +225,7 @@ Commented-out code adds clutter and creates doubt about whether it's still neede
 ## 7. Inconsistent Naming
 
 **Smell:**
+
 ```typescript
 function getUsr(id: string) { /* ... */ }
 function fetchCustomerRecord(id: string) { /* ... */ }
