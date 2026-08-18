@@ -1,4 +1,5 @@
 # 1.5 Company Reflection — Understanding Focus Bear's Mission & Vision
+
 Why do you think Focus Bear was created?
 
 Focus Bear was created by a founder (and later a team) who personally has ADHD and autism. They tried many existing productivity and wellness apps, but found none of them fit how their brains actually work — most mainstream apps assume a "neurotypical" user who can just follow a to-do list or resist distractions with willpower. So they built Focus Bear themselves, specifically to help people like them focus their attention, manage their time, and build routines in a way that works with an ADHD/autistic brain rather than against it.

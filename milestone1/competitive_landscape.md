@@ -1,4 +1,5 @@
 # 1.3 Research Assignment: Competitive Landscape — Focus Bear vs Other Productivity Apps
+
 Apps Researched
 Freedom — cross-device (Mac, Windows, iOS, Android, Chrome) website/app blocker with scheduled sessions, Locked Mode, and ambient sounds. Subscription-based (~$8.99/mo or $39.99/yr).
 Cold Turkey — Windows/Mac-only desktop blocker known for its extremely hard-to-bypass "Frozen Turkey" mode, which can lock the entire computer. One-time purchase (~$39), no mobile support.

@@ -1,4 +1,5 @@
 # 0.7 Cyber Security Guidelines
+
 Research & Learn
 
 Common cyber security threats in a remote work environment Working outside a controlled office network raises the risk of phishing emails, unsecured public/home Wi-Fi, malware from personal devices, lost or stolen laptops/phones, and credential-stuffing attacks where leaked passwords from other sites are reused to break into work accounts.

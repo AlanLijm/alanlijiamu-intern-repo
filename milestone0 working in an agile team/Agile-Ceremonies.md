@@ -1,4 +1,5 @@
 # 0.9 Agile Ceremonies & Team Collaboration
+
 Research & Learn
 
 What are the main Agile ceremonies, and what is their purpose?

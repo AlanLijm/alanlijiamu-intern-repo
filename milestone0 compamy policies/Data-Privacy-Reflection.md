@@ -71,7 +71,9 @@ One common mistake is discussing confidential data in a public or unsecured envi
 ## Task
 
 ### Identify at least one habit or practice you can adopt to improve data security in your role
+
 I will adopt the habit of only opening one confidential document at a time and closing it immediately after use, instead of leaving multiple sensitive files open in the background where they could be seen or accessed unintentionally.
 
 ### Document at least one key learning or security measure you will implement
+
 I will only share confidential documents through official, company-approved software, and will avoid storing any confidential data in personal cloud storage. Going forward, I will make sure any sensitive files I work with stay within official, secured systems, and I will delete local copies once they are no longer needed.
