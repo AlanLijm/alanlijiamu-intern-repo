@@ -36,6 +36,7 @@ async function processRefund(orders, orderId) {
 ```
 
 ### Problems
+
 - `getDiscountedPrice` doesn't validate its inputs: a negative `price`, a `discountPercent` over 100, or non-numeric input (e.g. `undefined`) all silently produce a nonsensical result (like a negative price) instead of failing clearly.
 - `findUserOrder` returns `undefined` when no match is found, with no signal to the caller that this is a real possibility they need to handle.
 - `processRefund` doesn't check whether `order` exists before using it — if the order isn't found, `order.total` throws an unhandled `TypeError: Cannot read properties of undefined`, which gives no useful information about *why* the refund failed.
@@ -92,6 +93,7 @@ async function processRefund(orders: Order[], orderId: string): Promise<number> 
 ```
 
 ### Why this is better
+
 - **Guard clauses** at the top of `getDiscountedPrice` and `processRefund` reject invalid input immediately, so the rest of each function can assume it's working with valid data — no defensive checks scattered later in the logic.
 - **`findUserOrder` returns `Order | null` instead of implicitly `undefined`**, and its return type makes the "not found" case visible in the type system, so callers can't forget to handle it without a type error.
 - **Specific error types** (`InvalidInputError`, `OrderNotFoundError`, `RefundFailedError`) let calling code (e.g. an API layer) catch each case and respond appropriately — for example, mapping `OrderNotFoundError` to a 404 and `InvalidInputError` to a 400 — instead of treating every failure identically.
@@ -105,7 +107,6 @@ The original functions assumed their inputs would always be valid and that every
 
 **How does handling errors improve reliability?**
 Explicit error handling means failures are anticipated and given a clear, typed identity instead of being an accident that happens to surface as a crash. This makes the system more predictable: callers can catch specific error types and decide how to respond (retry, show a message, log and alert), invalid data is rejected at the boundary before it can corrupt further logic, and when something does fail, the error message actually explains what happened and where — which makes debugging and recovery far faster than tracing back from a generic, unhandled exception.
-
 
 # 4.7 Refactoring Code for Simplicity
 
@@ -168,6 +169,7 @@ function getShippingCost(weight: number, mode: string): number {
 ```
 
 ### Problems
+
 - A full **Strategy + Factory pattern** (two classes, an interface, and a factory) is used for what is really just two flat rate multipliers (`2` and `5`) — this is over-engineering for a problem that doesn't need runtime-swappable, extensible strategy objects.
 - The unused `factory` variable in `getShippingCost` is dead code left over from a partial refactor.
 - The weight validation is written as **deeply nested conditionals** (`if weight is not null/undefined { if weight >= 0 { ... } else { ... } } else { ... }`) instead of simple guard clauses, making a simple rule ("invalid or negative weight costs 0") harder to see at a glance.
@@ -193,6 +195,7 @@ function getShippingCost(weight: number, mode: string): number {
 ```
 
 ### Why this is better
+
 - The **Strategy/Factory classes are replaced with a lookup table** (`SHIPPING_RATE_PER_KG`), since the "strategies" were really just two constant rates — no polymorphism or extensibility was actually needed. Adding a new shipping mode is now a one-line addition to the map instead of a new class plus a factory branch.
 - **Guard clause** (`if (weight == null || weight < 0) return 0;`) replaces the nested if/else, making the invalid-input rule immediately visible at the top of the function.
 - **Named constant map** replaces the magic numbers `2` and `5`, and documents both the rate and which mode it belongs to in one place.
@@ -207,10 +210,10 @@ The original code was complex mainly because of over-engineering: it used a full
 **How did refactoring improve it?**
 Replacing the Strategy/Factory pattern with a plain lookup object reduced five pieces of code (interface + 2 strategy classes + factory + function) down to one small map and one function, without losing any functionality — adding a new shipping mode is now trivial. Using a guard clause instead of nested conditionals made the "invalid weight" rule readable in a single line, and naming the rate constants removed the need to guess what `2` and `5` meant. The simplified version keeps exactly the same behavior as the original but requires far less effort to read, verify, or extend — matching the principle that structure should fit the actual complexity of the problem, not a hypothetical future one.
 
-
 # 4.9 Writing Unit Tests for Clean Code
 
 ## 📖 Research: Why Unit Testing Matters
+
 - **Tests document intent**: a well-written test shows exactly what a function is supposed to do for a given input, acting as executable documentation that stays accurate (unlike comments, which can drift — see 4.5).
 - **Tests enable safe refactoring**: clean code principles like extracting functions (4.3), removing duplication (4.4), and simplifying logic (4.7) all involve changing a function's internal structure. A test suite lets you make that change and immediately confirm behavior didn't break, rather than manually re-checking every case by hand.
 - **Tests push code toward better design**: functions that are hard to unit test (e.g. they depend on a live database, a network call, or global state) are often a sign the function is doing too much or is too tightly coupled — the same "long function" / "god object" smells from 4.8. Writing tests naturally pressures code toward small, pure, single-responsibility functions.
@@ -218,9 +221,11 @@ Replacing the Strategy/Factory pattern with a plain lookup object reduced five p
 - **Fast feedback loop**: a unit test runs in milliseconds and can be run on every save, catching regressions far earlier (and cheaper to fix) than a manual test or a bug report from a user.
 
 ## 🛠 Framework Chosen: Jest
+
 Jest was chosen since the onboarding repo (`onboarding-backend-nest-js`) is a NestJS/TypeScript project, and Jest is NestJS's default testing framework (bundled with the standard Nest CLI project setup).
 
 ## 🧩 Function Under Test
+
 Reusing `getShippingCost` from Milestone 4.7 (Refactoring for Simplicity):
 
 ```typescript
@@ -283,7 +288,6 @@ Writing these tests confirmed that `getShippingCost` is a small, pure function �
 
 **What issues did you find while testing?**
 Writing the zero-weight case (`getShippingCost(0, 'standard')`) exposed a subtle edge case worth double-checking: the guard clause only checks `weight == null || weight < 0`, so `0` correctly falls through to the calculation and returns `0 * 2 = 0` — the right answer, but for a different reason than the null/negative guard. It's easy to assume "0 is falsy so it's caught by the guard," which isn't actually true here, and a less careful implementation could have accidentally rejected valid zero-weight orders (e.g. a free digital add-on) if the guard clause had used `!weight` instead of the explicit `== null` check. Writing an explicit test for this case makes that behavior intentional and protected against future regressions, rather than accidentally correct.
-
 
 # 4.10 Code Formatting & Style Guides
 
