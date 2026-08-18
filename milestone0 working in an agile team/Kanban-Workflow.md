@@ -8,13 +8,14 @@ What do the different columns on a Kanban board represent?
 
 Typical columns (exact names vary by team):
 
-Column	Meaning
-Backlog	Work that's identified but not yet started or prioritized
-To Do / Ready	Prioritized and ready to be picked up next
-In Progress	Actively being worked on
-Blocked	Started, but stuck waiting on something (a decision, a dependency, a review from someone else)
-In Review / Ready for Review	Work is done and waiting for someone else to check it (e.g. code review, PR review)
-Done	Completed and meets the definition of done
+| Column | Meaning |
+|---|---|
+| Backlog | Work that's identified but not yet started or prioritized |
+| To Do / Ready | Prioritized and ready to be picked up next |
+| In Progress | Actively being worked on |
+| Blocked | Started, but stuck waiting on something (a decision, a dependency, a review from someone else) |
+| In Review / Ready for Review | Work is done and waiting for someone else to check it (e.g. code review, PR review) |
+| Done | Completed and meets the definition of done |
 
 A Blocked column (or a "blocked" label) matters because it makes stuck work visible immediately, instead of it silently sitting in "In Progress" while nothing actually happens.
 
@@ -46,8 +47,8 @@ Task
 Kanban board setup: I set up a board for the onboarding repo with the following columns: Not Started, In Progress, Ready for Review, and Approved. Out of the 79 onboarding issues, issues #1, #4, #5, #6, and #10 are currently in the In Progress column; issues #2, #3, #7, #8, and #9 have already been reviewed and moved to Approved; the remaining 69 issues sit in Not Started; and Ready for Review is currently empty since I haven't finished any in-progress issue yet.
 ![Kanban board screenshot](kanban_screenshot.png)
 
-Task moved through the board: 
-Issues #2, #3, #7, #8, and #9 started in Not Started, moved to In Progress while I worked on them, then to Ready for Review once I completed them and marked them ready, and finally to Approved after review confirmed they met the requirements.
+Task moved through the board:
+Issues #2, #3, #7, #8, and #9 started in Not Started, moved to In Progress while I worked on them, then to Read for Review once I completed them and marked them ready, and finally to Approved after review confirmed they met the requirements.
 ![Kanban board screenshot changed status](kanban_screenshot_newStatus.png)
 
 By contrast, issues #1, #4, #5, #6, and #10 are still sitting in In Progress, which reflects exactly the overload problem I identified in my reflection — too many tasks started at once without a WIP limit.

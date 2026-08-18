@@ -32,11 +32,10 @@ To allow the script to create issues, labels, and milestones, you need to genera
 
 ![CleanShot 2025-02-15 at 08 38 42](https://github.com/user-attachments/assets/3b9b8caa-b710-4706-bb53-b3d846f2de7e)
 
+- **Permissions:**
+  - Issues → **Read and Write**
+  - Metadata → **Read**
 
-   - **Permissions:**
-     - Issues → **Read and Write**
-     - Metadata → **Read**
-    
 ![CleanShot 2025-02-15 at 09 00 34](https://github.com/user-attachments/assets/3e1a7178-95ea-44a9-9f5f-3baaafc76a7a)
 
 
@@ -46,6 +45,7 @@ To allow the script to create issues, labels, and milestones, you need to genera
 
 ### **3️⃣ Clone This Repository**
 Download the source repository to your local machine:
+
 ```sh
  git clone https://github.com/Focus-Bear/onboarding-backend-nest-js.git
  cd onboarding-backend-nest-js
@@ -54,11 +54,13 @@ Download the source repository to your local machine:
 ### **4️⃣ Run the Script to Duplicate Issues, Labels, and Milestones**
 
 #### **Go to the `duplicate-repo` Folder**
+
 ```sh
 cd duplicate-repo
 ```
 
 #### **Install Dependencies**
+
 ```sh
 npm install
 ```
@@ -66,12 +68,14 @@ npm install
 #### **Create a `.env` File**
 
 1. Copy the example file:
+
    ```sh
 
    cp .env.sample .env
    ```
 
 2. Open `.env` and edit the following:
+
    ```ini
 
    GITHUB_TOKEN=your_github_token_here
