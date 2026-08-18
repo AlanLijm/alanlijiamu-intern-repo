@@ -236,6 +236,7 @@ choosing (or combining) which version to keep.
 # Milestone 3.6 — Staging vs. Committing
 
 ## Evidence
+
 On branch `staging-practice`, modified README.md and walked through the
 full staging lifecycle:
 
@@ -252,6 +253,7 @@ full staging lifecycle:
 ## Reflections
 
 ### What is the difference between staging and committing?
+
 Staging (`git add`) marks a change as ready to be included in the next
 commit — it moves the change into a temporary "staging area" without
 making it permanent. Committing (`git commit`) takes whatever is in the
@@ -259,6 +261,7 @@ staging area and writes it into the project's permanent history as a
 new snapshot.
 
 ### Why does Git separate these two steps?
+
 It gives control over exactly what goes into each commit. If multiple
 files were changed for different reasons, staging lets you group only
 the related ones together and commit them separately with a meaningful
@@ -266,6 +269,7 @@ message, instead of bundling every change into one commit regardless
 of whether it belongs together.
 
 ### When would you want to stage changes without committing?
+
 When you've made changes across several files but aren't ready to
 commit yet — for example, wanting to review the staged diff first
 (`git diff --staged`) before writing the commit message, or staging

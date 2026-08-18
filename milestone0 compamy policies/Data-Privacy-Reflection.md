@@ -3,6 +3,7 @@
 ## Research & Learn
 
 ### Key takeaways from Focus Bear's Privacy Policy
+
 - Focus Bear collects several categories of personal data: identification data (email, phone), social/lifestyle data (habits users create), academic/professional data (occupation), marketing preferences, technical/device data, financial data, profile/feedback data, and aggregate/demographic data.
 - Sensitive data falls under "Special Category of Personal Data" and is double-encrypted. Staff only look at it if a user reports a problem.
 - Financial data (card details) is never stored by Focus Bear directly — it's handled by Stripe, a secure third-party payment processor.
@@ -11,6 +12,7 @@
 - Users control their own marketing preferences and can opt out of emails/WhatsApp messages at any time.
 
 ### What types of data are considered confidential at Focus Bear?
+
 Based on the privacy policy, the following types of data are treated as confidential and require careful handling:
 - **Identification Data**: user emails, phone numbers, login credentials
 - **Social/Habit Data**: user-created habits, which can indirectly reveal lifestyle, religion, or health information (this is double-encrypted)
@@ -25,6 +27,7 @@ In addition to user data, as an intern I should also treat the following as conf
 - Any credentials or API keys used to access Focus Bear's systems
 
 ### What are best practices for handling confidential data?
+
 - Only access data or systems that are necessary for your current task (principle of least access/need-to-know)
 - Never share user data, internal documents, or credentials over unofficial channels (e.g. personal email, personal cloud storage, public chat groups)
 - Use company-approved, secure tools for storing and sharing sensitive information (e.g. tools/accounts provided by Focus Bear, not personal accounts)
@@ -34,6 +37,7 @@ In addition to user data, as an intern I should also treat the following as conf
 - Regularly delete or securely dispose of sensitive data once it's no longer needed
 
 ### How should you respond to a suspected data breach or accidental disclosure of confidential information?
+
 The privacy policy confirms Focus Bear has a formal security breach management process and technical/organisational measures to protect data confidentiality, integrity and availability, and to report breaches to the Supervisory Authority under GDPR.
 
 As a general best practice, if I suspected a data breach or accidental disclosure, I would:
@@ -46,6 +50,7 @@ As a general best practice, if I suspected a data breach or accidental disclosur
 ## Reflection
 
 ### What steps can you take to ensure you handle data securely in your daily tasks?
+
 - Only open one confidential document at a time, and close it immediately after use, rather than leaving multiple sensitive files open in the background
 - Lock my computer screen whenever I step away from my desk, even for a short time
 - Avoid saving confidential files to personal devices, personal cloud storage (e.g. Google Drive/OneDrive), or unofficial locations
@@ -53,9 +58,11 @@ As a general best practice, if I suspected a data breach or accidental disclosur
 - Use strong, unique passwords and enable two-factor authentication where available for any accounts that give access to company or user data
 
 ### How should you store, share, and dispose of sensitive information safely?
+
 I will only use official, company-approved software to share confidential documents, rather than personal messaging apps or unofficial tools. I will also avoid storing confidential data in personal cloud storage — sensitive information should stay within official, secured systems, and any local copies should be deleted once they are no longer needed.
 
 ### What are some common mistakes that lead to data privacy issues, and how can they be avoided?
+
 One common mistake is discussing confidential data in a public or unsecured environment (e.g. talking about sensitive user information where others can overhear, or in public chat channels). This can be avoided by only discussing confidential information in private, secure settings, and being mindful of who is nearby or who has access to the conversation.
 
 ## Task

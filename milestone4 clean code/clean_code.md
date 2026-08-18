@@ -447,5 +447,6 @@ Fixing those 4 manually also surfaced a real bug: I first wrote return 'Hello, $
 Setting this up on Windows with this project's ESLint version also surfaced two environment-specific issues: ESLint 8.57.1 doesn't default to flat config, so every run needed ESLINT_USE_FLAT_CONFIG=true set first; and flat config doesn't automatically know about Node/Jest globals (like console) the way the older .eslintrc.js's env: { node: true } option did, which needed the globals package and an explicit languageOptions.globals entry.
 
 **Did formatting the code make it easier to read?**
- Yes — the file went from mixed line endings, inconsistent quotes, and unused, dead-looking declarations to a short, consistently formatted file where every value is actually used and its purpose is clear. The process also caught a genuine logic bug (the wrong quote type breaking string interpolation) that would likely have been missed on a casual read, reinforcing that the setup effort for linting/formatting pays off even on a small file.
+ Yes — the file went from mixed line endings, inconsistent quotes, and unused, dead-looking declarations to a  short, consistently formatted file where every value is actually used and its purpose is clear. The process also  caught a genuine logic bug (the wrong quote type breaking string interpolation) that would likely have been
+ missed on a casual read, reinforcing that the setup effort for linting/formatting pays off even on a small file.
  

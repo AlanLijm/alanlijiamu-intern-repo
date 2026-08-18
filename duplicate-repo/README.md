@@ -1,6 +1,7 @@
-## Step 1: Duplicate this repository (including the issues)
+# Step 1: Duplicate this repository (including the issues)
 
 By the end of this process, you will:
+
 - Understand how to manage repositories on GitHub.
 - Learn how to use issues, labels, and milestones for tracking progress.
 - Gain hands-on experience with Node.js scripts and API automation.
@@ -10,9 +11,11 @@ Your first assignment is to **duplicate this repository** into a new public repo
 ---
 
 ## ✅ **How to Duplicate This Repository**
+
 Follow these steps carefully to set up your own intern repository.
 
 ### **1️⃣ Create a New Public Repository**
+
 1. Go to [GitHub](https://github.com/).
 2. Click on **New Repository**.
 3. Name it something like `your-username-intern-repo`.
@@ -21,9 +24,11 @@ Follow these steps carefully to set up your own intern repository.
 6. Copy the new repository URL.
 
 ### **2️⃣ Create a GitHub Personal Access Token**
+
 To allow the script to create issues, labels, and milestones, you need to generate a **fine-grained personal access token**.
 
 #### **Steps to Generate a Token:**
+
 1. Go to **[GitHub → Settings → Developer Settings → Personal Access Tokens](https://github.com/settings/tokens)**.
 2. Click on **"Generate new token (fine-grained)"**.
 3. Call it something like "Clone Focus Bear onboarding repo"
@@ -44,6 +49,7 @@ To allow the script to create issues, labels, and milestones, you need to genera
 ---
 
 ### **3️⃣ Clone This Repository**
+
 Download the source repository to your local machine:
 
 ```sh
