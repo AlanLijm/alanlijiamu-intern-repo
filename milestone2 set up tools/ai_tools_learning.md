@@ -24,17 +24,17 @@ I gave Cursor the same buggy NestJS `findOne` method used earlier with Claude (t
 
 ## Comparison: Claude (chat) vs Cursor (IDE-integrated)
 
-**Context**
+### Context
 
 - Claude (chat): only sees what I paste in
 - Cursor: reads the whole opened project automatically
 
-**Debugging**
+### Debugging
 
 - Claude (chat): explained the `=` vs `===` bug and its truthy-return cause
 - Cursor: same explanation, plus a concrete input/output comparison table
 
-**Best use case**
+### Best use case
 
 - Claude (chat): quick questions, concept explanations, isolated snippets
 - Cursor: understanding/navigating a real codebase, in-editor fixes
