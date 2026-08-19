@@ -11,6 +11,7 @@
 ## 🛠 Setting Up CI: Markdown Lint + Spell Check on PRs
 
 **GitHub Actions workflow** (`.github/workflows/lint-docs.yml`):
+
 ```yaml
 name: Lint Documentation
 
@@ -45,6 +46,7 @@ jobs:
 This runs two separate jobs whenever a PR touches any `.md` file: `markdownlint` for formatting/style rules (consistent heading levels, no trailing whitespace, etc.) and `cspell` for spelling. Both show up as PR status checks — a reviewer sees pass/fail directly on the PR without running anything locally.
 
 **`.markdownlint.json`** (repo root — customizes which markdown rules apply):
+
 ```json
 {
   "default": true,
@@ -53,9 +55,11 @@ This runs two separate jobs whenever a PR touches any `.md` file: `markdownlint`
   "MD025": false
 }
 ```
+
 (`MD013` — line length — and `MD033` — inline HTML — are disabled here since the milestone docs use long explanatory lines and occasional HTML for formatting; every other default rule stays on.)
 
 **`cspell.json`** (repo root — custom dictionary for project-specific terms):
+
 ```json
 {
   "version": "0.2",
@@ -105,17 +109,20 @@ This runs two separate jobs whenever a PR touches any `.md` file: `markdownlint`
 Husky runs checks locally *before* a commit is even created, catching issues before they ever reach CI — a faster feedback loop than waiting for the PR pipeline.
 
 **Install:**
+
 ```powershell
 npm install --save-dev husky lint-staged
 npx husky init
 ```
 
 **`.husky/pre-commit`:**
+
 ```bash
 npx lint-staged
 ```
 
 **`package.json` addition:**
+
 ```json
 {
   "lint-staged": {
@@ -124,6 +131,7 @@ npx lint-staged
   }
 }
 ```
+
 `lint-staged` runs the linter only on the files staged for commit (not the whole repo), so pre-commit checks stay fast even as the project grows. If a file fails lint and can't be auto-fixed, the commit is blocked until it's resolved.
 
 ## 🔁 CI vs Git Hooks — How They Fit Together
@@ -134,7 +142,7 @@ npx lint-staged
 ## 🧪 Test PR (Actual Run)
 Opened a real PR (`#82`, `test-ci-lint` → `main`) that intentionally introduced a skipped heading level and a misspelled word in a new file (`ci-test.md`) to trigger the workflow. Both `markdown-lint` and `spell-check` failed immediately, confirming the workflow triggers correctly on PRs.
 
-Fixing that PR to a green state turned into a much larger, more realistic exercise than expected — 23 commits over the course of the PR. `cspell` initially reported 44 spelling issues across 17 files (not just the intentionally-broken test file), because it scanned the whole repo rather than just the changed files. Most were false positives: legitimate technical terms (`NestJS`, `Validatable`), British spellings (`behaviour`, `organisational`, `colour`), product/brand names (`Tiimo`, `Routinery`, `Bitwarden`), and one genuine typo (`Principl` → `Principles`) that needed an actual fix rather than a dictionary addition. `markdownlint` surfaced an even wider spread of pre-existing issues across older milestone docs — inconsistent list markers (MD004), incorrect list indentation (MD007), hard tabs used for what were really tables (MD010), multiple top-level headings in a document that intentionally aggregates several milestones (MD025), trailing whitespace (MD009), multiple blank lines (MD012), emphasis used instead of real headings (MD036), fenced code blocks missing a language tag, and a setext-style heading accidentally created because a code fence was missing its opening backticks (which caused the code inside to be parsed as markdown instead of as a code block — a good reminder that one small formatting slip can cascade into several unrelated-looking lint errors).
+Fixing that PR to a green state turned into a much larger, more realistic exercise than expected — 23 commits over the course of the PR. `cspell` initially reported 44 spelling issues across 17 files (not just the intentionally-broken test file), because it scanned the whole repo rather than just the changed files. Most were false positives: legitimate technical terms (`NestJS`, `Validatable`), British spellings (`behaviour`, `organisational`, `colour`), product/brand names (`Tiimo`, `Routinery`, `Bitwarden`), and one genuine typo (`Principl` →  `Principles`) that needed an actual fix rather than a dictionary addition. `markdownlint` surfaced an even wider spread of pre-existing issues across older milestone docs — inconsistent list markers (MD004), incorrect list indentation (MD007), hard tabs used for what were really tables (MD010), multiple top-level headings in a document that intentionally aggregates several milestones (MD025), trailing whitespace (MD009), multiple blank lines (MD012), emphasis used instead of real headings (MD036), fenced code blocks missing a language tag, and a setext-style heading accidentally created because a code fence was missing its opening backticks (which caused the code inside to be parsed as markdown instead of as a code block — a good reminder that one small formatting slip can cascade into several unrelated-looking lint errors).
 
 Each issue got one of three treatments: (1) fixed at the source when it was a real formatting problem (rewriting tab-separated pseudo-tables into proper markdown tables, trimming trailing whitespace, fixing the missing code fence), (2) added to `cspell.json`'s custom dictionary when it was a legitimate term being flagged as unknown, or (3) disabled in `.markdownlint.json` when the rule conflicted with an intentional structural choice (e.g. `MD025` for `clean_code.md`, which deliberately uses multiple `#`-level headings to separate milestone sections). All checks passed after these fixes, and the PR was merged.
 
