@@ -135,11 +135,13 @@ npx lint-staged
 `lint-staged` runs the linter only on the files staged for commit (not the whole repo), so pre-commit checks stay fast even as the project grows. If a file fails lint and can't be auto-fixed, the commit is blocked until it's resolved.
 
 ## 🔁 CI vs Git Hooks — How They Fit Together
+
 - **Git hooks (Husky)**: fast, local, catches issues before a commit is even made — but can be bypassed (`git commit --no-verify`) or skipped if someone hasn't installed the hooks (e.g. a fresh clone before `npm install` runs).
 - **CI (GitHub Actions)**: slower (runs after push, not before commit) but authoritative — it runs in a clean environment for everyone, can't be bypassed by an individual's local setup, and is what actually gates merging via required status checks.
 - Using both together means most problems are caught immediately and locally (fast feedback), while CI acts as the non-negotiable safety net that guarantees nothing broken reaches `main`.
 
 ## 🧪 Test PR (Actual Run)
+
 Opened a real PR (`#82`, `test-ci-lint` → `main`) that intentionally introduced a skipped heading level and a misspelled word in a new file (`ci-test.md`) to trigger the workflow. Both `markdown-lint` and `spell-check` failed immediately, confirming the workflow triggers correctly on PRs.
 
 Fixing that PR to a green state turned into a much larger, more realistic exercise than expected — 23 commits over the course of the PR. `cspell` initially reported 44 spelling issues across 17 files (not just the intentionally-broken test file), because it scanned the whole repo rather than just the changed files. Most were false positives: legitimate technical terms (`NestJS`, `Validatable`), British spellings (`behaviour`, `organisational`, `colour`), product/brand names (`Tiimo`, `Routinery`, `Bitwarden`), and one genuine typo (`Principl` →  `Principles`) that needed an actual fix rather than a dictionary addition. `markdownlint` surfaced an even wider spread of pre-existing issues across older milestone docs — inconsistent list markers (MD004), incorrect list indentation (MD007), hard tabs used for what were really tables (MD010), multiple top-level headings in a document that intentionally aggregates several milestones (MD025), trailing whitespace (MD009), multiple blank lines (MD012), emphasis used instead of real headings (MD036), fenced code blocks missing a language tag, and a setext-style heading accidentally created because a code fence was missing its opening backticks (which caused the code inside to be parsed as markdown instead of as a code block — a good reminder that one small formatting slip can cascade into several unrelated-looking lint errors).
