@@ -35,7 +35,10 @@
   "focusbear",
   "blocklist",
   "Pomodoro",
-  "Jiamu"
+  "Jiamu",
+  "Anson",
+  "Principl",
+  "setext"
   ],
   "ignorePaths": ["node_modules/**"]
 }
