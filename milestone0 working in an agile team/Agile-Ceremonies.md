@@ -1,4 +1,5 @@
-Agile Ceremonies & Team Collaboration
+# 0.9 Agile Ceremonies & Team Collaboration
+
 Research & Learn
 
 What are the main Agile ceremonies, and what is their purpose?
@@ -11,12 +12,12 @@ Are there any blockers?
 
 Purpose: surface blockers early, keep the team aligned on progress, and avoid the need for longer status meetings later in the day. It's a coordination checkpoint, not a status report to a manager.
 Sprint Planning (Scrum) vs. Continuous Prioritization (Kanban)
-	Scrum – Sprint Planning	Kanban – Continuous Prioritization
-Cadence	Once per sprint (e.g. every 2 weeks)	Ongoing, as capacity frees up
-Output	A committed sprint backlog with a sprint goal	A continuously reordered backlog/board
-Change mid-cycle	Discouraged once sprint starts	Expected and normal
-Best fit	Predictable, iteration-based work	Flow-based work with variable/urgent priorities
-
+| Aspect | Scrum – Sprint Planning | Kanban – Continuous Prioritization |
+|---|---|---|
+| Cadence | Once per sprint (e.g. every 2 weeks) | Ongoing, as capacity frees up |
+| Output | A committed sprint backlog with a sprint goal | A continuously reordered backlog/board |
+| Change mid-cycle | Discouraged once sprint starts | Expected and normal |
+| Best fit | Predictable, iteration-based work | Flow-based work with variable/urgent priorities |
 
 Retrospectives
 Held at the end of a sprint (or periodically in Kanban). The team reflects on:
@@ -55,5 +56,3 @@ From the retrospective, team members reflected on which aspects of their work we
 
 Document one change you can make to improve your team collaboration.
 I need to do more retrospective-style self-reflection on my own work. This can help me identify my weaknesses and improve my performance in team collaboration.
-
-

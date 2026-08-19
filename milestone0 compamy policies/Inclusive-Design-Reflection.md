@@ -1,4 +1,5 @@
-Inclusive Design Reflection — Working with Vulnerable Populations
+# 0.4 Inclusive Design Reflection — Working with Vulnerable Populations
+
 Research & Learn
 
 Who are considered vulnerable populations, and what challenges might they face in digital spaces? Vulnerable populations in a digital-product context include neurodivergent people (ADHD, Autism, dyslexia), people with mental health conditions, older adults, people with physical or sensory disabilities, and people in crisis or under high stress. In digital spaces they commonly face cognitive overload from cluttered interfaces, inconsistent or unpredictable navigation, sensory triggers (autoplay video, harsh colours, sudden sounds), and shame-inducing design patterns (streak-breaking guilt, aggressive notifications) that punish rather than support inconsistency.

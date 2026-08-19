@@ -1,4 +1,5 @@
-Roles in an Agile Team
+# 0.11 Roles in an Agile Team
+
 Research & Learn
 What are the key roles in an Agile team, and what does each role do?
 
@@ -51,10 +52,10 @@ Task
  Write a short description of how your role fits into the Agile team.
  Identify one other role you frequently collaborate with and describe how you can improve teamwork with them.
 
-How my role fits into the Agile team: 
+How my role fits into the Agile team:
 As a backend developer at Focus Bear, my role fits into the Agile team by turning tasks the PM assigns into working code. I improve my code quality based on any feedback QA gives me, and I try my best to meet the requirements the PM sets out. I also coordinate with the Agile PM by keeping them updated on my progress, so the team always has visibility into what I'm working on.
 
-One role I frequently collaborate with, and how I can improve teamwork with them: 
+One role I frequently collaborate with, and how I can improve teamwork with them:
 The role I frequently collaborate with is the PM. They tell me what I need to achieve through the onboarding issues. Through the Kanban board, they can see what I'm currently working on, what I've completed, which issues I'm blocked on, and which ones I haven't started yet.
 
 One way I can improve teamwork with the PM is to update my issue status more promptly and add a comment whenever I get blocked, instead of just leaving it silently in "In Progress" — this way the PM can see the blocker immediately rather than only noticing it during a status check.

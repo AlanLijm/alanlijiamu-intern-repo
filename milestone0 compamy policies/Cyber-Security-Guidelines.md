@@ -1,4 +1,5 @@
-Cyber Security Guidelines
+# 0.7 Cyber Security Guidelines
+
 Research & Learn
 
 Common cyber security threats in a remote work environment Working outside a controlled office network raises the risk of phishing emails, unsecured public/home Wi-Fi, malware from personal devices, lost or stolen laptops/phones, and credential-stuffing attacks where leaked passwords from other sites are reused to break into work accounts.
@@ -28,7 +29,9 @@ Tasks
 
  Set up a password manager (e.g. Bitwarden) and move existing passwords into it
 
- Configure computer and phone to auto-lock after a short idle period (password/biometric required) — pending on 
- computer: currently blocked by a Windows activation issue (installed edition doesn't match the device's licensed edition, mid-fix); will complete once resolved
- 
- New habit I will follow at Focus Bear: enable 2FA immediately on any new account I create (work or personal), and manually lock my screen whenever I step away from my desk instead of relying only on the auto-lock timeout as a backup
+ Configure computer and phone to auto-lock after a short idle period (password/biometric required) — pending on
+ computer: currently blocked by a Windows activation issue (installed edition doesn't match the device's licensed  edition, mid-fix); will complete once resolved
+
+New habit I will follow at Focus Bear: enable 2FA immediately on any new account I create (work or personal), and
+ manually lock my screen whenever I step away from my desk instead of relying only on the auto-lock timeout as a
+backup.

@@ -12,4 +12,4 @@ I also installed **GitHub Desktop** to try a GUI client. I connected it to my re
 
 ## What was the most interesting thing I learned about Git today?
 
-Seeing my commit history in GitHub Desktop's History view made the value of **descriptive commit messages** very clear — messages like "resolve merge conflict in Agile-Principl..." and "conflicting add on main" instantly tell the story of what happened, without needing to open each diff. It reinforced that the GUI and CLI are just two views of the same underlying Git data — nothing is different about the repo itself, only how easy it is to inspect.
+Seeing my commit history in GitHub Desktop's History view made the value of **descriptive commit messages** very clear — messages like "resolve merge conflict in Agile-Principles..." and "conflicting add on main" instantly tell the story of what happened, without needing to open each diff. It reinforced that the GUI and CLI are just two views of the same underlying Git data — nothing is different about the repo itself, only how easy it is to inspect.

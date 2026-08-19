@@ -1,3 +1,5 @@
+# 1.1 Merge Conflicts & Conflict Resolution
+
 What caused the conflict?
 In the main branch and conflict branch I edit a same file but with different text. Therefore, when I want to merge these two branches, the conflict appeared.
 How did you resolve it?

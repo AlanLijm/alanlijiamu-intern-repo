@@ -35,7 +35,8 @@ async function processRefund(orders, orderId) {
 }
 ```
 
-### Problems
+### 4.6 Problems
+
 - `getDiscountedPrice` doesn't validate its inputs: a negative `price`, a `discountPercent` over 100, or non-numeric input (e.g. `undefined`) all silently produce a nonsensical result (like a negative price) instead of failing clearly.
 - `findUserOrder` returns `undefined` when no match is found, with no signal to the caller that this is a real possibility they need to handle.
 - `processRefund` doesn't check whether `order` exists before using it — if the order isn't found, `order.total` throws an unhandled `TypeError: Cannot read properties of undefined`, which gives no useful information about *why* the refund failed.
@@ -92,20 +93,20 @@ async function processRefund(orders: Order[], orderId: string): Promise<number> 
 ```
 
 ### Why this is better
+
 - **Guard clauses** at the top of `getDiscountedPrice` and `processRefund` reject invalid input immediately, so the rest of each function can assume it's working with valid data — no defensive checks scattered later in the logic.
 - **`findUserOrder` returns `Order | null` instead of implicitly `undefined`**, and its return type makes the "not found" case visible in the type system, so callers can't forget to handle it without a type error.
 - **Specific error types** (`InvalidInputError`, `OrderNotFoundError`, `RefundFailedError`) let calling code (e.g. an API layer) catch each case and respond appropriately — for example, mapping `OrderNotFoundError` to a 404 and `InvalidInputError` to a 400 — instead of treating every failure identically.
 - **The payment gateway call is wrapped in a try/catch** that re-throws with context (which order failed and why), instead of letting a raw, unexplained rejection propagate up.
 - **Edge cases are handled explicitly**: missing `orderId`, an order that doesn't exist, and a downstream payment failure are each a distinct, named path instead of one generic crash.
 
-## 💭 Reflections
+## 💭 4.6 Reflections
 
 **What was the issue with the original code?**
 The original functions assumed their inputs would always be valid and that every operation would succeed, so there was no code path for the cases where that assumption breaks — an order not being found, a bad discount value, or a failed refund call. This meant failures showed up as raw, unhandled exceptions (like a `TypeError` on `order.total`) rather than clear, meaningful errors, making it hard to tell *why* something failed or to distinguish an expected case (order not found) from a genuine bug.
 
 **How does handling errors improve reliability?**
 Explicit error handling means failures are anticipated and given a clear, typed identity instead of being an accident that happens to surface as a crash. This makes the system more predictable: callers can catch specific error types and decide how to respond (retry, show a message, log and alert), invalid data is rejected at the boundary before it can corrupt further logic, and when something does fail, the error message actually explains what happened and where — which makes debugging and recovery far faster than tracing back from a generic, unhandled exception.
-
 
 # 4.7 Refactoring Code for Simplicity
 
@@ -167,7 +168,8 @@ function getShippingCost(weight: number, mode: string): number {
 }
 ```
 
-### Problems
+### 4.7 Problems
+
 - A full **Strategy + Factory pattern** (two classes, an interface, and a factory) is used for what is really just two flat rate multipliers (`2` and `5`) — this is over-engineering for a problem that doesn't need runtime-swappable, extensible strategy objects.
 - The unused `factory` variable in `getShippingCost` is dead code left over from a partial refactor.
 - The weight validation is written as **deeply nested conditionals** (`if weight is not null/undefined { if weight >= 0 { ... } else { ... } } else { ... }`) instead of simple guard clauses, making a simple rule ("invalid or negative weight costs 0") harder to see at a glance.
@@ -192,14 +194,15 @@ function getShippingCost(weight: number, mode: string): number {
 }
 ```
 
-### Why this is better
+### 4.7 Why this is better
+
 - The **Strategy/Factory classes are replaced with a lookup table** (`SHIPPING_RATE_PER_KG`), since the "strategies" were really just two constant rates — no polymorphism or extensibility was actually needed. Adding a new shipping mode is now a one-line addition to the map instead of a new class plus a factory branch.
 - **Guard clause** (`if (weight == null || weight < 0) return 0;`) replaces the nested if/else, making the invalid-input rule immediately visible at the top of the function.
 - **Named constant map** replaces the magic numbers `2` and `5`, and documents both the rate and which mode it belongs to in one place.
 - The **dead `factory` variable is removed**.
 - The whole implementation is now readable in one function instead of requiring a reader to trace through five separate declarations.
 
-## 💭 Reflections
+## 💭 4.7 Reflections
 
 **What made the original code complex?**
 The original code was complex mainly because of over-engineering: it used a full Strategy + Factory design pattern to represent what was actually just two constant multipliers, adding four extra pieces of structure (an interface and three classes) for a problem that didn't need runtime extensibility. On top of that, the weight validation used unnecessarily nested conditionals for a simple rule, there was leftover dead code (the unused `factory` variable), and the shipping rates were unexplained magic numbers — none of which added any real value, but all of which added places a reader had to check to understand one simple calculation.
@@ -207,10 +210,10 @@ The original code was complex mainly because of over-engineering: it used a full
 **How did refactoring improve it?**
 Replacing the Strategy/Factory pattern with a plain lookup object reduced five pieces of code (interface + 2 strategy classes + factory + function) down to one small map and one function, without losing any functionality — adding a new shipping mode is now trivial. Using a guard clause instead of nested conditionals made the "invalid weight" rule readable in a single line, and naming the rate constants removed the need to guess what `2` and `5` meant. The simplified version keeps exactly the same behavior as the original but requires far less effort to read, verify, or extend — matching the principle that structure should fit the actual complexity of the problem, not a hypothetical future one.
 
-
 # 4.9 Writing Unit Tests for Clean Code
 
 ## 📖 Research: Why Unit Testing Matters
+
 - **Tests document intent**: a well-written test shows exactly what a function is supposed to do for a given input, acting as executable documentation that stays accurate (unlike comments, which can drift — see 4.5).
 - **Tests enable safe refactoring**: clean code principles like extracting functions (4.3), removing duplication (4.4), and simplifying logic (4.7) all involve changing a function's internal structure. A test suite lets you make that change and immediately confirm behavior didn't break, rather than manually re-checking every case by hand.
 - **Tests push code toward better design**: functions that are hard to unit test (e.g. they depend on a live database, a network call, or global state) are often a sign the function is doing too much or is too tightly coupled — the same "long function" / "god object" smells from 4.8. Writing tests naturally pressures code toward small, pure, single-responsibility functions.
@@ -218,9 +221,11 @@ Replacing the Strategy/Factory pattern with a plain lookup object reduced five p
 - **Fast feedback loop**: a unit test runs in milliseconds and can be run on every save, catching regressions far earlier (and cheaper to fix) than a manual test or a bug report from a user.
 
 ## 🛠 Framework Chosen: Jest
+
 Jest was chosen since the onboarding repo (`onboarding-backend-nest-js`) is a NestJS/TypeScript project, and Jest is NestJS's default testing framework (bundled with the standard Nest CLI project setup).
 
 ## 🧩 Function Under Test
+
 Reusing `getShippingCost` from Milestone 4.7 (Refactoring for Simplicity):
 
 ```typescript
@@ -284,10 +289,10 @@ Writing these tests confirmed that `getShippingCost` is a small, pure function �
 **What issues did you find while testing?**
 Writing the zero-weight case (`getShippingCost(0, 'standard')`) exposed a subtle edge case worth double-checking: the guard clause only checks `weight == null || weight < 0`, so `0` correctly falls through to the calculation and returns `0 * 2 = 0` — the right answer, but for a different reason than the null/negative guard. It's easy to assume "0 is falsy so it's caught by the guard," which isn't actually true here, and a less careful implementation could have accidentally rejected valid zero-weight orders (e.g. a free digital add-on) if the guard clause had used `!weight` instead of the explicit `== null` check. Writing an explicit test for this case makes that behavior intentional and protected against future regressions, rather than accidentally correct.
 
-
 # 4.10 Code Formatting & Style Guides
 
 ## 📖 Research: Why Consistent Code Style Matters
+
 - **Removes bikeshedding**: without an enforced style, developers spend time debating tabs vs spaces, quote style, or where to put a brace — decisions with no real impact on correctness. A style guide + automated enforcement settles these once, for the whole team.
 - **Makes diffs meaningful**: when formatting is inconsistent, a small logic change can produce a noisy diff full of unrelated whitespace/quote changes, making code review harder and hiding the actual change. Consistent formatting keeps diffs focused on real changes.
 - **Lowers the cost of reading unfamiliar code**: everyone benefits when every file "looks the same" — a reader doesn't need to adjust to each author's personal style when moving between files.
@@ -295,7 +300,9 @@ Writing the zero-weight case (`getShippingCost(0, 'standard')`) exposed a subtle
 - **Automation removes human error and friction**: manually enforcing style during code review is slow and inconsistent between reviewers. A formatter (Prettier) and linter (ESLint) run automatically, catching issues before a human reviewer even looks at the code.
 
 ## 📚 Airbnb JavaScript Style Guide — Key Points Reviewed
+
 The [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) is one of the most widely adopted style guides in the JS/TS ecosystem. Notable conventions relevant to this project:
+
 - Prefer `const` over `let`, and never use `var` — avoids accidental reassignment and scoping bugs.
 - Always use `===`/`!==` instead of `==`/`!=` to avoid type-coercion bugs (with `== null` commonly allowed as an intentional shorthand for "null or undefined").
 - Use template literals (`` `Hello ${name}` ``) instead of string concatenation.
@@ -309,13 +316,16 @@ These conventions connect back to earlier milestones — e.g. `===`/`== null` ti
 The onboarding repo (`onboarding-backend-nest-js`) turned out to be a milestone-based practice repo rather than a running NestJS service — it has no `src` folder, `tsconfig.json`, or Nest CLI scaffolding. Setup was done from scratch, and the process surfaced several real compatibility issues along the way (documented below rather than glossed over, since working through them was itself part of the exercise).
 
 **Install dependencies:**
+
 ```powershell
 npm install --save-dev eslint prettier eslint-config-prettier eslint-plugin-prettier @typescript-eslint/parser @typescript-eslint/eslint-plugin
 npm install --save-dev @eslint/js@8.57.1 globals
 ```
+
 (`eslint-config-airbnb-base` and `eslint-plugin-import` were installed initially to follow the Airbnb guide directly, but were dropped — Airbnb's config doesn't yet support ESLint's flat config format, so `@typescript-eslint/recommended` was used instead as a widely-adopted equivalent, applying the same Airbnb conventions reviewed above as manual rules.)
 
 **`eslint.config.mjs`** (flat config — required because this project uses ESLint 8.57.1, where flat config exists but isn't the default the way it is in ESLint 9+):
+
 ```javascript
 import js from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
@@ -355,6 +365,7 @@ export default [
 ```
 
 **`.prettierrc`:**
+
 ```json
 {
   "singleQuote": true,
@@ -366,6 +377,7 @@ export default [
 ```
 
 **Running lint** (ESLint 8.57.1 needs an explicit environment variable to use flat config):
+
 ```powershell
 $env:ESLINT_USE_FLAT_CONFIG="true"; npx eslint "milestone4 clean code/lint-demo.ts"
 $env:ESLINT_USE_FLAT_CONFIG="true"; npx eslint "milestone4 clean code/lint-demo.ts" --fix
@@ -374,6 +386,7 @@ $env:ESLINT_USE_FLAT_CONFIG="true"; npx eslint "milestone4 clean code/lint-demo.
 ## 🧩 What Actually Happened: Before → After
 
 **Before (`lint-demo.ts`):**
+
 ```typescript
 var userName = "Alan"
 let unusedVar = 5
@@ -393,12 +406,14 @@ function greet(name) {
 ```
 
 **First lint run — 18 problems:**
+
 - 14 Prettier formatting errors — mostly stray `␍` characters (Windows CRLF line endings not matching the project's expected line endings), plus missing semicolons and inconsistent quote style.
 - 4 real `@typescript-eslint/no-unused-vars` errors — `userName`, `unusedVar`, `calculateTax`, and `greet` were all declared but never used anywhere.
 
 **After `eslint --fix`:** all 14 formatting issues were resolved automatically. The 4 unused-variable errors were correctly left untouched — ESLint won't guess whether an unused declaration should be deleted or actually used, so that's a decision for a human.
 
 **After (manually resolved, then re-formatted):**
+
 ```typescript
 const userName = 'Alan';
 
@@ -416,14 +431,15 @@ function greet(name: string | null): string {
 
 console.log(userName, calculateTax(100), greet(userName));
 ```
+
 Final lint run: **0 problems.**
 
-## 💭 Reflections
+## 💭4.10 Reflections
 
-**Why is code formatting important? **
+**Why is code formatting important?**
 Consistent formatting keeps code review and diffs focused on real logic changes instead of whitespace or quote-style noise. It also removes decisions individual developers would otherwise make inconsistently (tabs vs spaces, quote style) — the tool decides once, for everyone, instead of relying on each contributor remembering the convention.
 
-**What issues did the linter detect? **
+**What issues did the linter detect?**
 The first run found 18 problems: 14 were Prettier formatting issues (mostly CRLF line-ending mismatches from Windows, plus missing semicolons and quote style), and 4 were genuine no-unused-vars errors for declarations that were never called anywhere in the file. eslint --fix cleared all 14 formatting issues automatically but correctly left the 4 unused-variable errors for manual review, since only a human can decide whether an unused declaration is dead code to delete or something that should actually be used.
 
 Fixing those 4 manually also surfaced a real bug: I first wrote return 'Hello, ${name}'; with single quotes instead of backticks, so the ${name} interpolation wouldn't actually have worked at runtime — it would have printed the literal text ${name} rather than the value of name. This was caught through manual code review, not by ESLint or Prettier. I confirmed this directly by reverting the line to the single-quote version and re-running the linter: it reported only a cosmetic quote-style suggestion ('Hello, ${name}' → "Hello, ${name}") with no indication that the interpolation was broken, since the line is syntactically valid — the tool has no way to know ${name} was meant to be evaluated. This confirmed that linting/formatting checks syntax and style, not intent, and doesn't substitute for actually reading (or testing) the logic — it complements testing (4.9) rather than replacing it.
@@ -431,4 +447,5 @@ Fixing those 4 manually also surfaced a real bug: I first wrote return 'Hello, $
 Setting this up on Windows with this project's ESLint version also surfaced two environment-specific issues: ESLint 8.57.1 doesn't default to flat config, so every run needed ESLINT_USE_FLAT_CONFIG=true set first; and flat config doesn't automatically know about Node/Jest globals (like console) the way the older .eslintrc.js's env: { node: true } option did, which needed the globals package and an explicit languageOptions.globals entry.
 
 **Did formatting the code make it easier to read?**
- Yes — the file went from mixed line endings, inconsistent quotes, and unused, dead-looking declarations to a short, consistently formatted file where every value is actually used and its purpose is clear. The process also caught a genuine logic bug (the wrong quote type breaking string interpolation) that would likely have been missed on a casual read, reinforcing that the setup effort for linting/formatting pays off even on a small file.
+ Yes — the file went from mixed line endings, inconsistent quotes, and unused, dead-looking declarations to a  short, consistently formatted file where every value is actually used and its purpose is clear. The process also  caught a genuine logic bug (the wrong quote type breaking string interpolation) that would likely have been
+ missed on a casual read, reinforcing that the setup effort for linting/formatting pays off even on a small file.

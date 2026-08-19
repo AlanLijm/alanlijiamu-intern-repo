@@ -1,26 +1,32 @@
 # Clean Code Principles
 
-##  Purpose
+## Purpose
+
 This document summarizes the core principles of clean code and demonstrates them with a before/after refactoring example, as part of Milestone 4.1 (Understanding Clean Code Principles).
 
-##  Core Principles
+## Core Principles
 
 ### 1. Simplicity
+
 Code should do what it needs to do in the most straightforward way possible. Avoid clever one-liners, unnecessary abstraction layers, or over-engineered solutions for simple problems. Simple code is easier to reason about, easier to test, and less likely to hide bugs.
 
 ### 2. Readability
+
 Code is read far more often than it is written. Variable, function, and class names should clearly express intent (`getUserById` instead of `getData`). Functions should be short and do one thing. Nesting and complex conditionals should be flattened where possible so a reader can follow the logic top to bottom without holding too much state in their head.
 
 ### 3. Maintainability
+
 Code should be written so that someone else — or "future you" six months from now — can safely change it. This means favoring small, single-responsibility functions/classes, minimizing tight coupling between modules, and avoiding duplicated logic that would need to be updated in multiple places.
 
 ### 4. Consistency
+
 Following a shared style guide (naming conventions, file structure, formatting, linting rules) makes a codebase predictable. When every file "looks the same," developers can move between parts of the project without re-learning local conventions. In a team project like this one, consistency matters more than any individual's personal preference.
 
 ### 5. Efficiency
+
 Code should be performant enough for its use case, but this should not come at the cost of readability unless there's a measured, real performance problem. Premature optimization often makes code harder to understand for a gain that may never matter. The rule of thumb: make it correct and clear first, then optimize where profiling shows it's actually needed.
 
-##  Example: Messy Code
+## Example: Messy Code
 
 The snippet below (a typical NestJS-style service method) is a realistic example of messy code:
 
@@ -53,6 +59,7 @@ async function proc(u: any, d: any) {
 ```
 
 ### Why this is hard to read
+
 - **Meaningless names**: `proc`, `u`, `d`, `r` give no clue about what the function does or what the data represents.
 - **`any` types**: there's no type safety, so a reader (and the compiler) can't tell what shape `u` and `d` actually have.
 - **Deep nesting**: three levels of `if` statements force the reader to track multiple conditions simultaneously.
@@ -60,7 +67,7 @@ async function proc(u: any, d: any) {
 - **Magic numbers**: `0.9`, `0.8`, and `1`/`2` for user type have no explanation of what they mean.
 - **No single responsibility**: the function mixes discount-rate lookup, validation (`amt > 0`), and calculation all in one place.
 
-##  Rewritten: Clean Version
+## Rewritten: Clean Version
 
 ```typescript
 interface User {
@@ -97,17 +104,19 @@ function calculateOrderTotal(user: User, order: Order): number {
 ```
 
 ### Why this is cleaner
+
 - **Descriptive names**: `calculateOrderTotal`, `user`, `order` immediately convey intent.
 - **Typed interfaces/enum**: `User`, `Order`, and `MembershipTier` give the compiler (and the reader) a clear contract instead of `any`.
 - **No duplicated branches**: the discount lookup is data-driven (`DISCOUNT_RATE_BY_TIER`), so adding a new tier means adding one entry, not a new `if` branch.
 - **Early returns instead of nesting**: guard clauses (`amount <= 0`, `status !== 'active'`) flatten the logic to a single level.
 - **Named constants instead of magic numbers**: discount rates are documented by the map they live in rather than bare literals scattered through the code.
 
-##  Summary
+## Summary
+
 Applying simplicity, readability, maintainability, consistency, and efficiency turned a nested, duplicated, untyped function into a short, self-documenting one — with the same behavior but far less risk when someone (including future me) needs to change it later.
 
-
 # 4.2 Naming Variables & Functions
+
  Best Practices Researched
 Be descriptive, not clever: a name should say what a variable holds or what a function does, without needing a comment to explain it (activeUserCount beats cnt).
 Use intention-revealing names: daysSinceLastLogin tells the reader why the value exists, not just its type.
@@ -162,6 +171,7 @@ What issues can arise from poorly named variables? Poor names slow down everyone
 How did refactoring improve code readability? After renaming, the function signature alone (calculateDiscountedPrice(originalPrice, discountValue, discountType)) explains what the function does and what each argument means — no need to read the function body or the call site's surrounding context. Replacing the 'p' magic string with a DiscountType union also means the compiler now catches invalid values, turning a naming improvement into a small correctness improvement as well.
 
 # 4.3 Writing Small, Focused Functions
+
  Best Practices Researched
 Single Responsibility Principle (function-level): a function should do one thing and do it well. If you need "and" to describe what it does (e.g. "validates the order and calculates the total and sends an email"), it should probably be three functions.
 One level of abstraction per function: don't mix high-level orchestration (e.g. "process the order") with low-level details (e.g. manually formatting a date string) in the same function body.
@@ -184,13 +194,13 @@ async function handleOrderSubmission(orderData: any): Promise<any> {
   // calculate total
   let total = 0;
   for (const item of orderData.items) {
-    total += item.price * item.quantity;
+    total += item.price*item.quantity;
   }
   if (orderData.couponCode) {
     if (orderData.couponCode === 'SAVE10') {
-      total = total * 0.9;
+      total = total*0.9;
     } else if (orderData.couponCode === 'SAVE20') {
-      total = total * 0.8;
+      total = total*0.8;
     }
   }
 
@@ -242,13 +252,13 @@ function validateOrder(orderData: OrderData): void {
 
 function calculateOrderTotal(orderData: OrderData): number {
   const subtotal = orderData.items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + item.price*item.quantity,
     0,
   );
   const discountRate = orderData.couponCode
     ? COUPON_DISCOUNTS[orderData.couponCode] ?? 0
     : 0;
-  return subtotal * (1 - discountRate);
+  return subtotal*(1 - discountRate);
 }
 
 async function saveOrder(orderData: OrderData, total: number) {
@@ -281,6 +291,7 @@ Why is breaking down functions beneficial? Small, single-purpose functions are e
 How did refactoring improve the structure of the code? The top-level handleOrderSubmission function turned into a short, readable sequence of clearly named steps (validate → calculate → save → notify), instead of one long block mixing all four concerns. Each extracted function now operates at a single level of abstraction, so a reader can drill into whichever step they care about instead of parsing the entire flow at once. It also made the coupon logic (calculateOrderTotal) independently reusable and testable, which wasn't possible when it was buried inside the larger function.
 
 # 4.4 Avoiding Code Duplication (DRY)
+
  Research: The DRY Principle
 
 "Don't Repeat Yourself" means every piece of knowledge or logic should have a single, unambiguous representation in the codebase. Duplication isn't just about identical lines of code — it's about the same decision or rule being expressed in more than one place. Key points from research:
@@ -368,6 +379,7 @@ What were the issues with duplicated code? The duplicated validation logic meant
 How did refactoring improve maintainability? After extracting validateEmail and validateAge into shared functions, there's now a single source of truth for each rule. A future change — such as tightening the email format check — only needs to happen in one place and automatically applies everywhere it's used. It also makes the intent clearer: validateUser reads as "run the standard user validation," rather than requiring the reader to compare three near-identical blocks to confirm they actually do the same thing.
 
 # 4.5 Commenting & Documentation
+
  Best Practices Researched
 Comments explain why, not what: the code itself should say what it does (via good naming and structure); comments are for context the code can't express — intent, trade-offs, business reasons, or warnings about non-obvious behavior.
 A needed comment is sometimes a refactoring signal: if a block of code needs a comment like // check if user can checkout, that's often a sign the block should become a function named canUserCheckout() instead — the name replaces the comment.
@@ -390,7 +402,7 @@ function proc(arr: number[]): number {
   return t;
 }
 
-// this is a discount, dont change unless told to
+// this is a discount, don't change unless told to
 // old logic from before, might be wrong
 function getDisc(p: number): number {
   return p * 0.85; // 15% off
@@ -402,25 +414,29 @@ The comment on proc (// function to process data) is vague and doesn't say what 
 getDisc's comments hint at important context ("might be wrong", "don't change unless told to") but don't explain why — who told them, what the correct rate should be, or what would break if changed. This is a warning sign without enough information to act on it.
 The 15% comment restates the literal 0.85 instead of explaining why the discount is 15% (e.g. is it a seasonal promotion? a loyalty tier?).
  Rewritten: Clear Naming + Purposeful Comments
-typescript
+
+```typescript
+
 /**
- * Sums all values in the given array.
+ -Sums all values in the given array.
  */
 function sumValues(values: number[]): number {
   return values.reduce((total, value) => total + value, 0);
 }
 
 /**
- * Applies the standard loyalty-tier discount (15%).
- *
- * NOTE: This rate is set by the Marketing team's Q3 promotion
- * (see ticket MKT-482) and is intentionally hardcoded until the
- * promotions service (planned for Q4) replaces it.
+ -Applies the standard loyalty-tier discount (15%)
+ -
+ -NOTE: This rate is set by the Marketing team's Q3 promotion
+ -(see ticket MKT-482) and is intentionally hardcoded until the
+ -promotions service (planned for Q4) replaces it.
  */
 function applyLoyaltyDiscount(price: number): number {
   const LOYALTY_DISCOUNT_RATE = 0.15;
-  return price * (1 - LOYALTY_DISCOUNT_RATE);
+  return price*(1 - LOYALTY_DISCOUNT_RATE);
 }
+```
+
 Why this is better
 sumValues and applyLoyaltyDiscount are self-explanatory from their names alone — the line-by-line "what" comments are no longer needed because the code (plus a short doc comment) already says what happens.
 The doc comment on sumValues documents its public contract in one line, useful to anyone calling it without reading the body.
@@ -428,11 +444,8 @@ The comment on applyLoyaltyDiscount now explains why the rate is 15% and why it'
 LOYALTY_DISCOUNT_RATE as a named constant removes the need for a comment translating 0.85 into "15% off."
  Reflections
 
-When should you add comments? 
+When should you add comments?
 Add a comment when the code cannot fully express something a reader needs to know: the why behind a decision (e.g. a business rule, a ticket reference, a deliberate trade-off), a warning about non-obvious or surprising behavior (a workaround for a library bug, a TODO for known debt), or a doc comment on a public API describing its contract for callers who won't read its internals. In short — comment when you're conveying context, not restating logic.
 
-When should you avoid comments and instead improve the code? 
+When should you avoid comments and instead improve the code?
 Avoid a comment whenever it exists only to explain what the code does — that's a sign the code itself should be clearer, usually through better naming or extracting a well-named function (e.g. // check if user can checkout becomes canUserCheckout()). Comments should also be avoided as a substitute for fixing confusing code: a comment that says "this is weird, don't touch it" without real context is a maintenance hazard, not documentation — the underlying code (or at least the reasoning) should be clarified instead.
-
-
-

@@ -1,4 +1,5 @@
-My role
+# 0.5 My role
+
 I am working on backend development for Focus Bear as part of my internship.
 The days and times I work are: Tuesdays and Thursdays, approximately 7.5 hours per session, hybrid (home or office).
 How I Work Best
