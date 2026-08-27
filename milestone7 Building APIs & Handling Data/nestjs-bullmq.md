@@ -15,3 +15,4 @@ If the `process()` method in a processor throws an exception, BullMQ considers t
 ## How does Focus Bear use BullMQ for background tasks?
 
 Based on my hands-on example, I can see how Focus Bear likely applies the same pattern: for example, when a user completes a habit or logs an activity, the app needs to save that data quickly and respond right away — but it might also want to send a reminder notification, update analytics, or sync data to another service, all of which can take longer. Just like my `create` method in `CatsService` saved the cat to the database and then added a `new-cat` job to the `notifications` queue without waiting for it, Focus Bear's backend can save the core data immediately and push the slower, non-critical tasks (sending notifications, processing analytics, syncing data) into BullMQ queues, letting dedicated processors handle them in the background — keeping the API fast and responsive for the user.
+
