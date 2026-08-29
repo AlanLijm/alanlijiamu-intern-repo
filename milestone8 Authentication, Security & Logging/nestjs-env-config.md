@@ -24,11 +24,13 @@ How can you separate configuration for different environments (e.g., local vs. p
 @nestjs/config supports loading different .env files based on the current environment via the envFilePath option, passed as an array:
 
 typescript
+```
 ConfigModule.forRoot({
   isGlobal: true,
   validationSchema: envSchema,
   envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
 }),
+```
 
 NestJS checks the files in order and uses the first one that exists. If NODE_ENV=production, it first looks for .env.production; if that file exists, its values are used. If not, it falls back to the plain .env. This means the same codebase can run in local development and production without any code changes — only which .env file is present on that machine changes. It's also a security boundary: a real .env.production with production secrets would only ever exist on the production server/CI, never on a developer's laptop, so a compromised dev machine can't leak production credentials.
 
