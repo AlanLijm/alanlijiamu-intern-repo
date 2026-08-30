@@ -1,0 +1,24 @@
+Logging & Error Handling in NestJS — Reflection
+What are the benefits of using nestjs-pino for logging?
+
+Before, logging (like the console.log-based LoggingInterceptor from milestone 7) produced plain, unstructured text lines such as [Interceptor] Done in 71ms. That's fine for a human glancing at a terminal, but hard for any tool to process automatically — extracting the duration or filtering by module requires regex hacks.
+
+nestjs-pino outputs structured JSON instead, where every piece of information is its own field — level, time, pid, hostname, context, msg — e.g. {"level":30,"time":1788095175741,"context":"InstanceLoader","msg":"TypeOrmModule dependencies initialized"}. This is worse for a human reading it directly, but much better for machines: a log aggregation/monitoring system can filter by level to surface only errors, search by context to isolate one module's logs, or query by time range, none of which is practical with unstructured text.
+
+nestjs-pino also supports switching output style based on environment: in development, a pino-pretty transport reformats the same structured data into a readable, colorized format for a human at a terminal; in production, it's left as raw JSON since that's what gets fed into log-processing systems, not read directly. I set this project up to switch automatically based on NODE_ENV, using the same config-per-environment pattern from milestone 8.2.
+
+How does global exception handling improve API consistency?
+
+I tested this with two completely different error sources — a BadRequestException thrown by ParseIntPipe when parsing an invalid :id, and a NotFoundException thrown automatically when hitting a route that doesn't exist. Both came back with the exact same response shape: {statusCode, timestamp, path, message}, just with different values.
+
+Without a global exception filter, each controller or service would be responsible for catching and formatting its own errors. In a real codebase with multiple developers, that inevitably leads to inconsistent formats — one endpoint might return {error: "..."}, another {msg: "..."}, another might leak a raw stack trace. A global filter (@Catch() with no argument, registered once via APP_FILTER) intercepts every exception across the whole app in one place, so no matter which layer threw the error or who wrote that code, the response shape is guaranteed consistent. This matters for API consumers too — a frontend or another service calling this API can write one generic error-handling function instead of custom parsing logic per endpoint.
+
+What is the difference between a logging interceptor and an exception filter?
+
+An Interceptor (like LoggingInterceptor from milestone 7) wraps around the Controller method's execution and runs on every request regardless of outcome — it records a start time before the handler runs, then after the handler finishes (whether it succeeded or threw), it logs the duration and result. It runs unconditionally, as part of the normal request flow.
+
+An Exception Filter (AllExceptionsFilter) only activates when something actually goes wrong — it sits waiting and does nothing for a successful request. It only runs when an exception is thrown somewhere in the request lifecycle (a Guard, Pipe, Controller, or Service), at which point it takes over, formats a consistent error response, and logs the failure. So the practical difference is: an Interceptor observes and wraps every request; an Exception Filter only reacts to failed ones.
+
+How can logs be structured to provide useful debugging information?
+
+Instead of logging a single flattened message string, useful debugging logs put each relevant piece of information into its own field. In AllExceptionsFilter, I log this.logger.error({ statusCode, path, exception }, 'Request failed') rather than something like this.logger.error('Request failed: ' + exception.message). The difference matters: with separate fields, a log aggregation system (or even just grepping structured JSON) can filter or query by statusCode (e.g. show only 500s), by path (show only errors on a specific endpoint), or search within the full exception object (including its stack trace) — none of which is possible once everything has been squashed into one text string. nestjs-pino's baseline fields (level, time, context) add further structure automatically, so every log line is consistently queryable by when it happened, how severe it was, and which part of the app produced it — which is exactly what you need when trying to reconstruct what went wrong after the fact, rather than only being able to search for exact phrases.
