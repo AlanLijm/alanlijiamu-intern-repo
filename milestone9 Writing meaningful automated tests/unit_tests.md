@@ -20,3 +20,16 @@ With the use of mock API, we didn't need a real backend environment and database
 - Test passes: `PASS src/UserProfile.test.jsx`.
 
 Code pushed to GitHub under `milestone9 Writing meaningful automated tests/jest-mocking-demo/` in the onboarding repo.
+
+Milestone 9.4 — Introduction to Unit Testing with Jest
+Reflection
+
+Why is automated testing important in software development?
+
+If we have automated testing, we can check the code quality after each code change. It reduces the risk of bugs appearing, since problems in the tested logic can be found automatically instead of relying on manually checking everything by hand. After changing the code, we can run the automated tests again to make sure the previous functionality still works — this is what protects against regressions when the codebase keeps changing over time.
+
+What did you find challenging when writing your first Jest test?
+
+The first problem for me was understanding what toBe means — it's a Jest matcher, which is how expect(...) decides what kind of comparison to run. toBe specifically checks strict equality between two values (similar to ===), which is why it works well for comparing simple values like numbers.
+
+The second problem was understanding why I need to write export default ... at the end of the file. It's how a JavaScript file exposes something for other files to import. Unlike a named export, a default export can be imported under any name in the importing file, since there's no need to match a specific name — that's why the test file could just write import sum from './sum' and it worked.
